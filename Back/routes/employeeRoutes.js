@@ -10,6 +10,7 @@ router.get('/employees', employeeController.getEmployees)
 
 // Route pour obtenir un employé par ID
 router.get('/employees/:id', employeeController.getEmployeeById)
+router.get('/getEmployeeByMatricule/:matricule', employeeController.getEmployeeByMatricule)
 
 // Route pour mettre à jour un employé par ID
 router.put('/employees/:id', employeeController.updateEmployee)

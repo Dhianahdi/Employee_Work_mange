@@ -2,83 +2,226 @@
   <div class="row">
     <div class="col-xxl-9 col-lg-8">
       <div class="inner-contents">
-        <div class="page-header d-flex align-items-center justify-content-between mr-bottom-30">
+        <div
+          class="page-header d-flex align-items-center justify-content-between mr-bottom-30">
           <div class="left-part">
             <h2 class="text-dark">Profile</h2>
-            <p class="text-gray mb-0">Lorem ipsum dolor sit amet </p>
           </div>
           <div class="right-part">
-            <form class="search-form w-auto" action="https://wpthemebooster.com/demo/themeforest/html/kleon/search.php">
-              <input type="text" name="search" class=" bg-white form-control" placeholder="Search">
-              <button type="submit" class="btn"><img src="assets/img/svg/search.svg" alt=""></button>
-            </form>
+
           </div>
         </div>
 
         <div class="row">
-          <div class="col-xxl-6">
-            <div class="card border-0 card-graph p-5">
-              <div
-                class="card-header bg-transparent border-0 p-0 d-flex align-items-center justify-content-between gap-3 mb-0">
-                <h4 class="mb-0">Task Activity</h4>
-              </div>
-              <div class="card-body p-0">
-                <div id="chart-29"></div>
+          <div class="col-xxl-4 col-lg-4">
+            <div class="card border-0 card--stat bg-primary text-white">
+              <div class="card-body">
+                <div class="card-img d-flex align-items-center gap-3">
+                  <span class="d-inline-block bg-secondary text-white"><i
+                      class="bi bi-check-square-fill"></i></span>
+                  <h5 class="mb-0 text-white fw-semibold">Total Heures Normales</h5>
+                </div>
+                <div class="card-content mt-4 mb-4">
+                  <h3 class="fs-38 mb-0 text-white">{{employeedata.totalHeuresNormales}}</h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon"><i
+                      class="bi bi-arrow-up-circle-fill"></i></span>
+                  <p class="mb-0"> {{hoursToDays(employeedata.totalHeuresNormales)}}</p>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-xxl-6">
-            <div class="card border-0 card-graph p-5">
-              <div
-                class="card-header bg-transparent border-0 p-0 d-flex align-items-center justify-content-between gap-3 mb-0">
-                <h4 class="mb-0">Project Session</h4>
+
+          <div class="col-xxl-4 col-lg-4">
+            <div class="card border-0 card--stat bg-info text-white">
+              <div class="card-body">
+                <div class="card-img d-flex align-items-center gap-3">
+                  <span class="d-inline-block bg-primary text-white"><i
+                      class="bi bi-lightbulb-fill"></i></span>
+                  <h5 class="mb-0 text-white fw-semibold">total Heures Supplementaires</h5>
+                </div>
+                <div class="card-content mt-4 mb-4">
+                  <h3 class="fs-38 mb-0 text-white">{{employeedata.totalHeuresSupplementaires}}</h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon"><i
+                      class="bi bi-arrow-up-circle-fill"></i></span>
+                  <p class="mb-0"> {{hoursToDays(employeedata.totalHeuresSupplementaires)}}</p>
+                </div>
               </div>
-              <div class="card-body p-0">
-                <div id="chart-30"></div>
+            </div>
+          </div>
+
+          <div class="col-xxl-4 col-lg-4">
+            <div class="card border-0 card--stat bg-secondary text-white">
+              <div class="card-body">
+                <div class="card-img d-flex align-items-center gap-3">
+                  <span class="d-inline-block bg-info text-white"><i
+                      class="bi bi-bookmarks-fill"></i></span>
+                  <h5 class="mb-0 text-white fw-semibold">Total Heures Samedi</h5>
+                </div>
+                <div class="card-content mt-4 mb-4">
+                  <h3 class="fs-38 mb-0 text-white">{{employeedata.totalHeuresSamedi}}</h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon"><i
+                      class="bi bi-arrow-up-circle-fill"></i></span>
+                  <p class="mb-0"> {{hoursToDays(employeedata.totalHeuresSamedi)}}</p>
+                </div>
+              </div>
+            </div>
+          </div> <div class="col-xxl-4 col-lg-4">
+            <div class="card border-0 card--stat bg-secondary text-white">
+              <div class="card-body">
+                <div class="card-img d-flex align-items-center gap-3">
+                  <span class="d-inline-block bg-info text-white"><i
+                      class="bi bi-bookmarks-fill"></i></span>
+                  <h5 class="mb-0 text-white fw-semibold">total Heures Dimanche</h5>
+                </div>
+                <div class="card-content mt-4 mb-4">
+                  <h3 class="fs-38 mb-0 text-white">{{employeedata.totalHeuresDimanche}}</h3>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="icon"><i
+                      class="bi bi-arrow-up-circle-fill"></i></span>
+                  <p class="mb-0"> {{hoursToDays(employeedata.totalHeuresDimanche)}} </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
         <div class="card border-0 p-5">
-          <div class="card-body p-0">
-            <div class="row">
-              <div class="col-xxl-9">
-                <div
-                  class="card-header bg-transparent border-0 p-0 d-flex align-items-center justify-content-between gap-3 mb-2">
-                  <h4>Performance</h4>
-                </div>
-                <div id="chart-4"></div>
-              </div>
-              <div class="col-xxl-3">
-                <div
-                  class="card-header  bg-transparent border-0 p-0 mb-5 d-flex align-items-center justify-content-between gap-3">
-                  <div class="ms-auto d-flex align-items-center gap-3">
-                    <select class="kleon-select-simple nav-toggler-content">
-                      <option value="0">Daily</option>
-                      <option value="1">Weekly</option>
-                      <option selected value="2">Monthly</option>
-                      <option value="3">Yearly</option>
-                    </select>
-                  </div>
-                </div>
-
-                <p class="text-gray">Dec 1 - Dec 31, 2022</p>
-                <div class="stats mb-5">
-                  <p class="mb-1">This Month</p>
-                  <h2 class="mb-0 d-block"> +53.678 <br> <span class="fs-18 text-success"><span class="icon fs-22"><i
-                          class="bi bi-arrow-up-circle-fill"></i></span> +15%</span></h2>
-                </div>
-                <div class="stats">
-                  <p class="mb-1">Last Month</p>
-                  <h2 class="mb-0 d-block"> +23.678 <br> <span class="fs-18 text-danger"><span class="icon fs-22"><i
-                          class="bi bi-arrow-down-circle-fill"></i></span> -35%</span></h2>
+          <div
+            class="card-header pb-5 bg-transparent border-0 d-flex align-items-center justify-content-between gap-3">
+            <h4 class="mb-0">Check List</h4>
+            <div class="ms-auto d-flex align-items-center gap-3">
+              <div class="dropdown">
+                <a href="#" data-bs-toggle="dropdown" class="fs-24 text-gray">
+                  <i class="bi bi-three-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu p-0">
+                  <a class="dropdown-item" href="#">View</a>
+                  <a class="dropdown-item" href="#">Edit</a>
+                  <a class="dropdown-item text-danger" href="#">Delete</a>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <div id="table-3_wrapper" class="dataTables_wrapper no-footer">
+                <div class="dataTables_length" id="table-3_length">
+                  <label>Show
+                    <select name="table-3_length" aria-controls="table-3">
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                    entries
+                  </label>
+                </div>
+                <div id="table-3_filter" class="dataTables_filter">
+                  <label>
+                    <i class="bi bi-search"></i>
+                    <input type="search" placeholder="Search here"
+                      aria-controls="table-3">
+                  </label>
+                </div>
+                <table id="table-3"
+                  class="display text-center dataTable no-footer"
+                  aria-describedby="table-3_info">
+                  <thead>
+                    <tr>
+                      <th class="sorting sorting_asc" tabindex="0"
+                        aria-controls="table-3" rowspan="1" colspan="1"
+                        aria-sort="ascending"
+                        aria-label=": activate to sort column descending"
+                        style="width: 40px;">
+                        <input type="checkbox" class="form-check-input"
+                          id="checkbox1" value>
+                      </th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label="Checkin: activate to sort column ascending"
+                        style="width: 174.75px;">Checkin</th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label="Mid-checkout: activate to sort column ascending"
+                        style="width: 149.975px;">Mid-checkout</th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label="Mid-checkin: activate to sort column ascending"
+                        style="width: 129.125px;">Mid-checkin</th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label="Checkout: activate to sort column ascending"
+                        style="width: 58px;">Checkout</th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label="Date: activate to sort column ascending"
+                        style="width: 102.525px;">Date</th>
+                      <th class="sorting" tabindex="0" aria-controls="table-3"
+                        rowspan="1" colspan="1"
+                        aria-label=": activate to sort column ascending"
+                        style="width: 19px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="odd">
+                      <td class="sorting_1">
+                        <input type="checkbox" class="form-check-input"
+                          id="checkbox1" value>
+                      </td>
+                      <td><h5>08:00 AM</h5></td>
+                      <td><h5>12:00 PM</h5></td>
+                      <td><h5>01:00 PM</h5></td>
+                      <td><h5>05:00 PM</h5></td>
+                      <td>June 1, 2024</td>
+                      <td>
+                        <div class="dropdown">
+                          <a href="#" data-bs-toggle="dropdown"
+                            class="fs-24 text-gray">
+                            <i class="bi bi-three-dots-vertical"></i>
+                          </a>
+                          <div class="dropdown-menu p-0">
+                            <a class="dropdown-item"
+                              href="checkin.html">View</a>
+                            <a class="dropdown-item" href="#">Edit</a>
+                            <a class="dropdown-item text-danger"
+                              href="#">Delete</a>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
 
+                  </tbody>
+                </table>
+                <div class="dataTables_info" id="table-3_info" role="status"
+                  aria-live="polite">Showing 1 to 10 of 14 entries</div>
+                <div class="dataTables_paginate paging_simple_numbers"
+                  id="table-3_paginate">
+                  <a class="paginate_button previous disabled"
+                    aria-controls="table-3" aria-disabled="true" role="link"
+                    data-dt-idx="previous" tabindex="-1"
+                    id="table-3_previous"><i class="bi bi-chevron-left"></i></a>
+                  <span>
+                    <a class="paginate_button current" aria-controls="table-3"
+                      role="link" aria-current="page" data-dt-idx="0"
+                      tabindex="0">1</a>
+                    <a class="paginate_button" aria-controls="table-3"
+                      role="link" data-dt-idx="1" tabindex="0">2</a>
+                  </span>
+                  <a class="paginate_button next" aria-controls="table-3"
+                    role="link" data-dt-idx="next" tabindex="0"
+                    id="table-3_next"><i class="bi bi-chevron-right"></i></a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
 
@@ -89,7 +232,8 @@
           <div class="card-body p-0">
             <div class="d-flex justify-content-between gap-4 p-0 mb-5">
               <div>
-                <img src="assets/img/nav_author.jpg" alt="img" width="80" height="80" class="rounded-1">
+                <img src="http://127.0.0.1:5000/img/{{ employee.image }}"
+                  alt="img" width="80" height="80" class="rounded-1">
               </div>
               <div class="ms-auto">
                 <a href="#" data-bs-toggle="dropdown" class="fs-24 text-gray">
@@ -102,96 +246,43 @@
               </div>
             </div>
             <div>
-              <h3 class="fs-36">Franklin Jr.</h3>
-              <p class="fw-semibold text-gray mb-0">UI Designer at <span class="fw-bold text-primary">Kleon
-                  Studio</span></p>
+              <h3 class="fs-36">{{ employee.nom }}.</h3>
+              <p class="fw-semibold text-gray mb-0">Matricule <span
+                  class="fw-bold text-primary">{{ employee.matricule
+                  }}</span></p>
             </div>
 
             <ul class="list-unstyled mt-3 mr-bottom-25">
-              <li class="d-flex align-items-center justify-content-between gap-3 mb-3">
+              <li
+                class="d-flex align-items-center justify-content-between gap-3 mb-3">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="candidate--contact-icon bg-soft-primary text-center">
+                  <div
+                    class="candidate--contact-icon bg-soft-primary text-center">
                     <i class="bi bi-telephone-fill"></i>
                   </div>
-                  <div class="fs-14 fw-semibold"><a href="tel:+12 345 6789 0" class="text-dark">+12 345 6789 0</a></div>
+                  <div class="fs-14 fw-semibold"><a href="tel:+12 345 6789 0"
+                      class="text-dark">+12 345 6789 0</a></div>
                 </div>
               </li>
 
-              <li class="d-flex align-items-center justify-content-between gap-3 mb-3">
+              <li
+                class="d-flex align-items-center justify-content-between gap-3 mb-3">
                 <div class="d-flex align-items-center gap-3">
-                  <div class="candidate--contact-icon bg-soft-primary text-center">
+                  <div
+                    class="candidate--contact-icon bg-soft-primary text-center">
                     <i class="bi bi-envelope-fill"></i>
                   </div>
-                  <div class="fs-14 fw-semibold"><a href="mailto:angelamoss@mail.com"
+                  <div class="fs-14 fw-semibold"><a
+                      href="mailto:angelamoss.com"
                       class="text-dark">angelamossmail.com</a></div>
                 </div>
               </li>
             </ul>
 
-            <div class="d-flex align-items-center justify-content-xl-between gap-3">
-              <div class="bg-light-200 text-center rounded-1 p-3" style="width: 167px">
-                <p class="fs-14 mb-1">Project Complete</p>
-                <h4 class="mb-0"><i class="bi bi-file-text-fill text-gray"></i> <span class="text-primary">100</span>
-                </h4>
-              </div>
-
-              <div class="bg-light-200 text-center rounded-1 p-3" style="width: 167px">
-                <p class="fs-14 mb-1">Project Ongoing</p>
-                <h4 class="mb-0"><i class="bi bi-lightbulb-fill text-gray"></i> <span class="text-primary">50</span>
-                </h4>
-              </div>
-            </div>
-
-            <div class="mr-top-40">
-              <div class="border-0 d-flex align-items-center justify-content-between gap-4 mb-4">
-                <h4 class="mb-0">Project Progress</h4>
-
-                <div class="ms-auto">
-                  <a href="#" data-bs-toggle="dropdown" class="fs-24 text-gray">
-                    <i class="bi bi-three-dots-vertical"></i>
-                  </a>
-                  <div class="dropdown-menu p-0">
-                    <a class="dropdown-item" href="#">View</a>
-                    <a class="dropdown-item" href="#">Edit</a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card border-0 p-0 bg-primary text-white">
-                <div class="card-body">
-                  <div class="storage">
-                    <i class="bi bi-file-text-fill fs-24 text-white"></i>
-                    <h5 class="text-white">Project Kleon</h5>
-                    <div class="progress rounded-1 bg-dark" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                      style="height: 11px;">
-                      <div class="progress-bar bg-white rounded-1" style="width: 62%"></div>
-                    </div>
-                    <h5 class="d-flex justify-content-between fw-semibold text-white mt-2 mb-0"><span>Progress</span>
-                      <span>62%</span>
-                    </h5>
-                  </div>
-                </div>
-              </div>
-
-              <div class="card border-0 p-0 bg-secondary text-white">
-                <div class="card-body">
-                  <div class="storage">
-                    <i class="bi bi-file-text-fill fs-24 text-white"></i>
-                    <h5 class="text-white">Project Portu</h5>
-                    <div class="progress rounded-1 bg-dark" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                      style="height: 11px;">
-                      <div class="progress-bar bg-white rounded-1" style="width: 25%"></div>
-                    </div>
-                    <h5 class="d-flex justify-content-between fw-semibold text-white mt-2 mb-0"><span>Progress</span>
-                      <span>25%</span>
-                    </h5>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>

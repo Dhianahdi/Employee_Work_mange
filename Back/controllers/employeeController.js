@@ -68,6 +68,18 @@ exports.deleteEmployee = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+// Obtenir un employé par matricule
+exports.getEmployeeByMatricule = async (req, res) => {
+  try {
+    const employee = await Employee.findOne({ matricule: req.params.matricule });
+    if (!employee) {
+      return res.status(404).json({ message: 'Employé non trouvé' });
+    }
+    res.status(200).json(employee);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
 
 const joursFeries = [
   '01/01', // Nouvel An

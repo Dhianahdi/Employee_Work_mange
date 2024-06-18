@@ -6,120 +6,41 @@
         <h2 class="text-dark">Employees</h2>
       </div>
       <div class="right-part d-flex align-items-center">
-        <form class="search-form w-auto"
-          action="https://wpthemebooster.com/demo/themeforest/html/kleon/search.php">
-          <input type="text" name="search" class=" bg-white form-control"
-            placeholder="Search">
+               <form class="search-form w-auto" (ngSubmit)="searchEmployees()">
+          <input type="text" name="search" class="bg-white form-control" placeholder="Search" [(ngModel)]="searchTerm">
           <button type="submit" class="btn"><img src="assets/img/svg/search.svg"
               alt></button>
         </form>
-        <div class="filtering d-flex align-items-center gap-3 ms-3">
-          <a href="#" class="btn list-view p-0 fs-30"><i
-              class="bi bi-list"></i></a>
-          <a href="#" class="btn grid-view p-0 fs-30 active"><i
-              class="bi bi-grid"></i></a>
-        </div>
+
       </div>
     </div>
 
     <div class="row">
-      <div class="col-xxl-3 col-lg-6">
-        <div class="card border-0">
-          <div class="card-body">
+      <div class="col-xxl-3 col-lg-6" *ngFor="let employee of employees"
+      >
+
+        <div class="card border-primary mb-3 p-3">
+
+          <div class="card-body" (click)="navigateprofile(employee.matricule)">
+
             <div class="d-flex align-items-center gap-4 flex-wrap">
               <div
                 class="avatar-img avatar-xl rounded-2 overflow-hidden flex-shrink-0">
-                <img src="assets/img/1.jpg" alt="img" class="w-100" />
+                <img src="http://127.0.0.1:5000/img/{{ employee.image }}"
+                  alt="img" class="w-100" />
               </div>
               <div class="card-content">
-                <h5 class="mb-1">Samantha William</h5>
-                <small class="d-inline-block text-gray fs-14 fw-normal">Web
-                  Developer</small>
+                <h5 class="mb-1">{{ employee.nom }}</h5>
+                <small class="d-inline-block text-gray fs-14 fw-normal">Matricule:
+                  {{ employee.matricule }}</small>
               </div>
             </div>
 
-            <p
-              class="d-flex align-items-center justify-content-between fs-14 fw-semibold text-black mt-4 flex-wrap">
-              <span><i
-                  class="text-primary bi bi-telephone-fill me-2"></i><span>+12
-                  345 6789 0</span></span>
-              <span><i
-                  class="text-primary bi bi-envelope-fill me-2"></i><span>emailmail.com</span></span>
-            </p>
 
-            <hr />
-
-            <div class="d-flex justify-content-between gap-3 flex-wrap">
-              <div
-                class="bg-light-200 rounded-1 flex-grow-1 p-3 d-flex flex-column justify-content-center">
-                <small class="d-inline-block text-gray mb-2">Attendance</small>
-                <h4 class="mb-0">150 <small
-                    class="d-inline-block text-gray ff-base fs-14 fw-normal">Days</small></h4>
-              </div>
-              <div
-                class="bg-light-200 rounded-1 flex-grow-1 p-3 d-flex flex-column justify-content-center">
-                <small class="d-inline-block text-gray mb-2">Percentage</small>
-                <h4 class="mb-0"><span class="pie"
-                    data-peity='{ "fill": ["#924AEF", "#F5F5F5"], "radius": 24 }'>3/4</span><span
-                    class="ff-heading fs-24 fw-bold text-dark ms-1">75%</span></h4>
-              </div>
-            </div>
-
-            <div class="mt-5">
-              <h5 class="mb-2 mb-sm-4">Leave balance</h5>
-              <div class="row row-cols-md-4">
-                <div class="col pe-0">
-                  <h5 class="mb-0">15<small
-                      class="ff-base fs-14 fw-normal text-gray">/8hr</small></h5>
-                  <small class="fs-12 text-gray">Personal</small>
-                </div>
-                <div class="col pe-0">
-                  <h5 class="mb-0">5<small
-                      class="ff-base fs-14 fw-normal text-gray">/21hr</small></h5>
-                  <small class="fs-12 text-gray">Sick</small>
-                </div>
-                <div class="col pe-0">
-                  <h5 class="mb-0">7<small
-                      class="ff-base fs-14 fw-normal text-gray">/30hr</small></h5>
-                  <small class="fs-12 text-gray">Vacation</small>
-                </div>
-                <div class="col pe-0">
-                  <h5 class="mb-0">21<small
-                      class="ff-base fs-14 fw-normal text-gray">/12hr</small></h5>
-                  <small class="fs-12 text-gray">Annual</small>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div
-      class="my-5 mt-2 d-flex justify-content-center justify-content-sm-between align-items-center flex-wrap gap-2">
-      <p>Showing <span class="fw-bold">1-10</span> from <span
-          class="fw-bold">46</span> data</p>
-
-      <nav aria-label="Page navigation">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Previous">
-              <span aria-hidden="true">&laquo;</span>
-            </a>
-          </li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item">
-            <a class="page-link" href="#" aria-label="Next">
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-
-
 
   </div>
 </div>
