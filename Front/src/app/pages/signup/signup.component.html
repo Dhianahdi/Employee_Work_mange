@@ -1,0 +1,122 @@
+<main class="main-content main-content-bg mt-0">
+  <section>
+    <div class="page-header min-vh-100">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-4 col-lg-5 col-md-4 d-flex flex-column mx-auto">
+            <div class="card card-plain mt-sm-8 mt-7 mt-md-5">
+              <div class="card-header pb-0 text-left">
+                <h3 class="font-weight-bolder text-dark text-gradient">Join us today</h3>
+                <p class="mb-0">Enter your email and password to register</p>
+              </div>
+              <div class="card-body pb-3">
+                <form [formGroup]="signupForm" (ngSubmit)="formSubmit()" role="form">
+                  <h6 class="mb-2 text-xs">Personal Information</h6>
+                  <div class="row">
+                    <div class="form-group" [ngClass]="{'has-danger': signupForm.get('userName')!.invalid && signupForm.get('userName')!.touched, 'has-success': signupForm.get('userName')!.valid && signupForm.get('userName')!.touched}">
+                      <input type="text" class="form-control" formControlName="userName" placeholder="Username" aria-label="Name" [ngClass]="{'is-invalid': signupForm.get('userName')!.invalid && signupForm.get('userName')!.touched, 'is-valid': signupForm.get('userName')!.valid && signupForm.get('userName')!.touched}">
+                      <div *ngIf="signupForm.get('userName')!.invalid && signupForm.get('userName')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('userName')!.errors!['required']">Username is required.</div>
+                        <div *ngIf="signupForm.get('userName')!.errors!['pattern']">Invalid username format. Use only alphanumeric characters.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 form-group" [ngClass]="{'has-danger': signupForm.get('userFirstName')!.invalid && signupForm.get('userFirstName')!.touched, 'has-success': signupForm.get('userFirstName')!.valid && signupForm.get('userFirstName')!.touched}">
+                      <input type="text" class="form-control" formControlName="userFirstName" placeholder="First Name" aria-label="First Name" [ngClass]="{'is-invalid': signupForm.get('userFirstName')!.invalid && signupForm.get('userFirstName')!.touched, 'is-valid': signupForm.get('userFirstName')!.valid && signupForm.get('userFirstName')!.touched}">
+                      <div *ngIf="signupForm.get('userFirstName')!.invalid && signupForm.get('userFirstName')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('userFirstName')!.errors!['required']">First name is required.</div>
+                        <div *ngIf="signupForm.get('userFirstName')!.errors!['pattern']">Only letters are allowed.</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 form-group" [ngClass]="{'has-danger': signupForm.get('userLastName')!.invalid && signupForm.get('userLastName')!.touched, 'has-success': signupForm.get('userLastName')!.valid && signupForm.get('userLastName')!.touched}">
+                      <input type="text" class="form-control" formControlName="userLastName" placeholder="Last Name" aria-label="Last Name" [ngClass]="{'is-invalid': signupForm.get('userLastName')!.invalid && signupForm.get('userLastName')!.touched, 'is-valid': signupForm.get('userLastName')!.valid && signupForm.get('userLastName')!.touched}">
+                      <div *ngIf="signupForm.get('userLastName')!.invalid && signupForm.get('userLastName')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('userLastName')!.errors!['required']">Last name is required.</div>
+                        <div *ngIf="signupForm.get('userLastName')!.errors!['pattern']">Only letters are allowed.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <h6 class="mb-2 text-xs">Contacts</h6>
+                  <div class="row">
+                    <div class="form-group" [ngClass]="{'has-danger': signupForm.get('phone')!.invalid && signupForm.get('phone')!.touched, 'has-success': signupForm.get('phone')!.valid && signupForm.get('phone')!.touched}">
+                      <input type="text" class="form-control" formControlName="phone" placeholder="Phone" aria-label="Phone" [ngClass]="{'is-invalid': signupForm.get('phone')!.invalid && signupForm.get('phone')!.touched, 'is-valid': signupForm.get('phone')!.valid && signupForm.get('phone')!.touched}">
+                      <div *ngIf="signupForm.get('phone')!.invalid && signupForm.get('phone')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('phone')!.errors!['required']">Phone number is required.</div>
+                        <div *ngIf="signupForm.get('phone')!.errors!['pattern']">Invalid phone number. It must be 8 digits long.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group" [ngClass]="{'has-danger': signupForm.get('email')!.invalid && signupForm.get('email')!.touched, 'has-success': signupForm.get('email')!.valid && signupForm.get('email')!.touched}">
+                      <input type="email" class="form-control" formControlName="email" placeholder="Email" aria-label="Email" [ngClass]="{'is-invalid': signupForm.get('email')!.invalid && signupForm.get('email')!.touched, 'is-valid': signupForm.get('email')!.valid && signupForm.get('email')!.touched}">
+                      <div *ngIf="signupForm.get('email')!.invalid && signupForm.get('email')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('email')!.errors!['required']">Email is required.</div>
+                        <div *ngIf="signupForm.get('email')!.errors!['email']">Invalid email format.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <h6 class="mb-2 text-xs">Security</h6>
+                  <div class="row">
+                    <div class="col-md-6 form-group" [ngClass]="{'has-danger': signupForm.get('userPassword')!.invalid && signupForm.get('userPassword')!.touched, 'has-success': signupForm.get('userPassword')!.valid && signupForm.get('userPassword')!.touched}">
+                      <input type="password" class="form-control" formControlName="userPassword" placeholder="Password" aria-label="Password" [ngClass]="{'is-invalid': signupForm.get('userPassword')!.invalid && signupForm.get('userPassword')!.touched, 'is-valid': signupForm.get('userPassword')!.valid && signupForm.get('userPassword')!.touched}">
+                      <div *ngIf="signupForm.get('userPassword')!.invalid && signupForm.get('userPassword')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('userPassword')!.errors!['required']">Password is required.</div>
+                        <div *ngIf="signupForm.get('userPassword')!.errors!['weakPassword']">Password is too weak. Please choose a stronger password.</div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 form-group" [ngClass]="{'has-danger': signupForm.hasError('mismatch') && signupForm.get('confirmPassword')!.touched, 'has-success': !signupForm.hasError('mismatch') && signupForm.get('confirmPassword')!.touched}">
+                      <input type="password" class="form-control" formControlName="confirmPassword" placeholder="Confirm Password" aria-label="Confirm Password" [ngClass]="{'is-invalid': signupForm.hasError('mismatch') && signupForm.get('confirmPassword')!.touched, 'is-valid': !signupForm.hasError('mismatch') && signupForm.get('confirmPassword')!.touched}">
+                      <div *ngIf="signupForm.get('confirmPassword')!.touched && signupForm.hasError('mismatch')" class="invalid-feedback">
+                        <div>Passwords do not match.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <h6 class="mb-2 text-xs">Select Role</h6>
+                  <div class="row">
+                    <div class="form-group" [ngClass]="{'has-danger': signupForm.get('role')!.invalid && signupForm.get('role')!.touched, 'has-success': signupForm.get('role')!.valid && signupForm.get('role')!.touched}">
+                      <select class="form-control" formControlName="role" [ngClass]="{'is-invalid': signupForm.get('role')!.invalid && signupForm.get('role')!.touched, 'is-valid': signupForm.get('role')!.valid && signupForm.get('role')!.touched}">
+                        <option value="" disabled selected>Select a role</option>
+                        <option value="Reader">Reader</option>
+                        <option value="Writer">Writer</option>
+                      </select>
+                      <div *ngIf="signupForm.get('role')!.invalid && signupForm.get('role')!.touched" class="invalid-feedback">
+                        <div *ngIf="signupForm.get('role')!.errors!['required']">Role selection is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-check form-check-info text-left">
+                    <input class="form-check-input" type="checkbox" formControlName="termsAccepted" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                      I agree to the <a href="../../../pages/privacy.html" class="text-dark font-weight-bolder">Terms and Conditions</a>
+                    </label>
+                    <div *ngIf="signupForm.get('termsAccepted')!.invalid && signupForm.get('termsAccepted')!.touched" class="invalid-feedback">
+                      <div *ngIf="signupForm.get('termsAccepted')!.errors!['required']">You must accept the terms and conditions.</div>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button type="submit" class="btn btn-outline-dark w-100 mt-4 mb-0" [disabled]="isLoading">
+                      <span *ngIf="!isLoading">Sign Up</span>
+                      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card-footer text-center pt-0 px-lg-2 px-1">
+              <p class="mb-4 text-sm mx-auto">
+                Already have an account?
+                <a routerLink="/login" class="text-dark text-gradient font-weight-bold">Sign in</a>
+              </p>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+              <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('../../../assets/img/curved-images/bg3.png')"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
