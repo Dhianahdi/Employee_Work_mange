@@ -6,16 +6,43 @@ const path = require('path')
 const EmployeePoints = require('../models/employeePoints');
 
 // Créer un employé
-exports.createEmployee = async (req, res) => {
-  try {
-    const newEmployee = new Employee(req.body)
-    const savedEmployee = await newEmployee.save()
-    res.status(201).json(savedEmployee)
-  } catch (error) {
-    res.status(400).json({ message: error.message })
+// Fonction pour générer une matricule aléatoire de 3 ou 4 chiffres
+function generateMatricule() {
+  const length = Math.floor(Math.random() * 2) + 3; // Génère 3 ou 4
+  let matricule = '';
+  for (let i = 0; i < length; i++) {
+    matricule += Math.floor(Math.random() * 10);
   }
+  return matricule;
 }
 
+// Fonction pour vérifier l'unicité de la matricule
+async function getUniqueMatricule() {
+  let isUnique = false;
+  let newMatricule = '';
+  while (!isUnique) {
+    newMatricule = generateMatricule();
+    const existingEmployee = await Employee.findOne({ matricule: newMatricule });
+    if (!existingEmployee) {
+      isUnique = true;
+    }
+  }
+  return newMatricule;
+}
+
+exports.createEmployee = async (req, res) => {
+  try {
+    const matricule = await getUniqueMatricule();
+    const newEmployee = new Employee({
+      ...req.body,
+      matricule: matricule
+    });
+    const savedEmployee = await newEmployee.save();
+    res.status(201).json(savedEmployee);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
 // Obtenir tous les employés
 exports.getEmployees = async (req, res) => {
   try {
@@ -39,35 +66,37 @@ exports.getEmployeeById = async (req, res) => {
   }
 }
 
-// Mettre à jour un employé par ID
+// Mettre à jour un employé par matricule
 exports.updateEmployee = async (req, res) => {
   try {
-    const updatedEmployee = await Employee.findByIdAndUpdate(
-      req.params.id,
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { matricule: req.params.matricule },
       req.body,
-      { new: true, runValidators: true },
-    )
+      { new: true, runValidators: true }
+    );
     if (!updatedEmployee) {
-      return res.status(404).json({ message: 'Employé non trouvé' })
+      return res.status(404).json({ message: 'Employé non trouvé' });
     }
-    res.status(200).json(updatedEmployee)
+    res.status(200).json(updatedEmployee);
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    res.status(400).json({ message: error.message });
   }
-}
+};
 
-// Supprimer un employé par ID
+
+// Supprimer un employé par matricule
 exports.deleteEmployee = async (req, res) => {
   try {
-    const deletedEmployee = await Employee.findByIdAndDelete(req.params.id)
+    const deletedEmployee = await Employee.findOneAndDelete({ matricule: req.params.matricule });
     if (!deletedEmployee) {
-      return res.status(404).json({ message: 'Employé non trouvé' })
+      return res.status(404).json({ message: 'Employé non trouvé' });
     }
-    res.status(200).json({ message: 'Employé supprimé avec succès' })
+    res.status(200).json({ message: 'Employé supprimé avec succès' });
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(500).json({ message: error.message });
   }
-}
+};
+
 // Obtenir un employé par matricule
 exports.getEmployeeByMatricule = async (req, res) => {
   try {

@@ -10,6 +10,7 @@ const server = http.createServer(app)
 const mongoose = require('mongoose')
 const employeeRoutes = require('./routes/employeeRoutes')
 const employeePointsRoutes = require('./routes/employeePointsRoutes');
+const authorizationRoutes = require('./routes/authorizationRoutes');
 
 server.listen(port, () => {
   console.log('Listening on ' + port)
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 })
 
 const path = require('path')
+const authorization = require('./models/authorization')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -67,6 +69,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 app.use('/img', express.static(path.join(__dirname, 'img')))
 
 app.use('/api/employee', employeeRoutes)
+app.use('/api/authorization', authorizationRoutes)
 app.use('/api/employeePoints', employeePointsRoutes);
 
 

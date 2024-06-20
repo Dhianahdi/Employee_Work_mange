@@ -9,7 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 import { ToastrModule } from 'ngx-toastr';
-
 import { BrowserModule } from '@angular/platform-browser';
 import { AdminComponent } from './admin/admin.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +19,8 @@ import { HeaderComponent } from './components/header/header.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LoginService } from './service/login.service';
+import { AdduserComponent } from './adduser/adduser.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
   declarations: [
@@ -29,8 +30,9 @@ import { LoginService } from './service/login.service';
     FooterComponent,
     AuthorizationComponent,
     ProfileComponent,
-    EmployeesComponent
-  ],
+    EmployeesComponent,
+      AdduserComponent
+   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -43,12 +45,14 @@ import { LoginService } from './service/login.service';
     NgxApexchartsModule,
     ReactiveFormsModule,
     ToastrModule.forRoot({
-      timeOut: 5000,
+      timeOut: 2500,
       positionClass: 'toast-bottom-right',
       progressBar: true,
-      extendedTimeOut: 3000,
+      extendedTimeOut: 1000,
     }),
     CountUpModule,
+    NgxSpinnerModule,
+
   ],
   providers: [
     LoginService,

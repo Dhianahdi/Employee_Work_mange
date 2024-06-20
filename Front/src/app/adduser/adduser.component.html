@@ -1,0 +1,78 @@
+ <div class="container-fluid">
+  <div class="row">
+
+    <div class="inner-contents">
+      <div class="col-xl-8 col-md-7">
+        <div class="card pt-5">
+          <div
+            class="card-header bg-transparent d-flex align-items-center justify-content-between p-3 pt-0 gap-3 flex-wrap">
+            <h4 class="mb-0 fs-26 d-flex align-items-baseline gap-4"> <a
+                href="#" class="d-flex align-items-center text-dark"><i
+                  class="bi bi-arrow-left-short fs-26 me-5 d-inline-block"></i>
+                Add New Contact</a></h4>
+            <div class="ms-xxl-auto d-flex align-items-center gap-3">
+              <div>
+                <a href="#" data-bs-toggle="dropdown" class="fs-20 text-gray"><i
+                    class="bi bi-three-dots-vertical"></i></a>
+                <div class="dropdown-menu p-0">
+                  <a class="dropdown-item" href="#">Save Info</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+         
+            <form class method="post">
+              <div class="row">
+                <div class="col-xxl-8">
+                  <h4 class="mb-5">General Info</h4>
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label
+                          class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Full
+                          Name</label>
+                        <input type="text" class="form-control"
+                          name="first_name" value="Samuel"
+                          placeholder="Full Name">
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+                <div class="col-xxl-4 col-lg-5">
+                  <div class="form-group mt-xxl-7">
+                    <label
+                      class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Profile
+                      Picture</label>
+                    <div>
+                      <img src="assets/img/2.jpg" alt="img"
+                        class="rounded-1 w-100" style="max-height: 300px;">
+                    </div>
+                    <button id="dpz-multiple-files"
+                      class="dropzone align-items-center justify-content-center btn btn-outline-primary fs-18 text-uppercase w-100 px-1 py-3 m-0 mt-4 dz-clickable"
+                      type="button">
+                      <div class="dz-message" data-dz-message><i
+                          class="bi bi-camera-fill me-2"></i> Change Photo</div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group mb-0">
+                <button type="submit"
+                  class="btn btn-primary fs-18 text-uppercase mx-0"><i
+                    class="bi bi-file-arrow-down-fill me-2"></i> Save
+                  Contacts</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

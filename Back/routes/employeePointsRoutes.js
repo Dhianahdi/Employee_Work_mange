@@ -6,5 +6,9 @@ router.get(
   '/:matricule',
   employeePointsController.getEmployeePointsByMatricule,
 )
+router.get(
+  '/getEmployeePointsDetails/:matricule',
+  employeePointsController.getEmployeePointsDetails,
+)
 
 module.exports = router

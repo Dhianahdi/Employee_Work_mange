@@ -3,11 +3,17 @@ const Authorization = require('../models/authorization');
 // Créer une autorisation
 exports.createAuthorization = async (req, res) => {
   try {
-    const newAuthorization = new Authorization(req.body);
+    const { matricule, dateDebut, dateFin } = req.body;
+    const newAuthorization = new Authorization({
+      matricule,
+      dateDebut,
+      dateFin
+    });
     const savedAuthorization = await newAuthorization.save();
     res.status(201).json(savedAuthorization);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error adding authorization:', error);
+    res.status(400).json({ message: 'Failed to add authorization' });
   }
 };
 
@@ -34,6 +40,18 @@ exports.getAuthorizationById = async (req, res) => {
   }
 };
 
+exports.getAuthorizationsByMatricule = async (req, res) => {
+  try {
+    const { matricule } = req.params;
+    const authorizations = await Authorization.find({ matricule });
+    if (!authorizations) {
+      return res.status(404).json({ message: 'No authorizations found for this matricule' });
+    }
+    res.status(200).json(authorizations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // Mettre à jour une autorisation par ID
 exports.updateAuthorization = async (req, res) => {
   try {

@@ -3,18 +3,18 @@ const router = express.Router();
 const authorizationController = require('../controllers/authorizationController');
 
 // Route pour créer une nouvelle autorisation
-router.post('/authorizations', authorizationController.createAuthorization);
+router.post('/', authorizationController.createAuthorization);
 
 // Route pour obtenir toutes les autorisations
-router.get('/authorizations', authorizationController.getAuthorizations);
+router.get('/', authorizationController.getAuthorizations);
 
 // Route pour obtenir une autorisation par ID
-router.get('/authorizations/:id', authorizationController.getAuthorizationById);
+router.get('/:matricule', authorizationController.getAuthorizationsByMatricule);
 
 // Route pour mettre à jour une autorisation par ID
-router.put('/authorizations/:id', authorizationController.updateAuthorization);
+router.put('/:id', authorizationController.updateAuthorization);
 
 // Route pour supprimer une autorisation par ID
-router.delete('/authorizations/:id', authorizationController.deleteAuthorization);
+router.delete('/:id', authorizationController.deleteAuthorization);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const authorizationSchema = new mongoose.Schema(
   {
-    idEmployee: { type: Schema.Types.ObjectId, ref: 'Employee', required: true },
+    matricule: { type: String, required: true },
     dateDebut: { type: Date, required: true },
     dateFin: { type: Date, required: true }
   },
