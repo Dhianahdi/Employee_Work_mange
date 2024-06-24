@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import * as moment from 'moment';
 
 interface ProcessedData {
   date: string; // Date avec nom de jour
@@ -153,4 +154,11 @@ console.log(this.processedData)
 
   return `${totalDays} days, ${totalHours} hours, and ${totalMinutes} minutes`;
 }
+
+
+  isExceedingTime(time: string): boolean {
+    const thresholdTime = moment('08:15', 'HH:mm');
+    const pointTime = moment(time, 'HH:mm');
+    return pointTime.isAfter(thresholdTime);
+  }
 }

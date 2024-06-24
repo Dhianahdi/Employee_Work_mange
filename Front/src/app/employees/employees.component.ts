@@ -20,6 +20,7 @@ export class EmployeesComponent implements OnInit {
   updateForm: FormGroup;
   imageSrc: string | ArrayBuffer | null = null;
   selectedEmployee: any = null;
+  selectedFile: File | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -52,6 +53,19 @@ export class EmployeesComponent implements OnInit {
       this.employees = response;
       this.employees1 = response;
       this.filteredEmployees = [...this.employees];
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }finally {
+      this.spinner.hide();
+    }
+  }
+
+
+    async getEmployeesdata() {
+    try {
+
+   const response1 = await this.http.get<any[]>('http://localhost:5000/api/employee/group-points-by-employee').toPromise();
+
     } catch (error) {
       console.error('Error fetching employees:', error);
     }finally {
@@ -117,6 +131,38 @@ export class EmployeesComponent implements OnInit {
     }
   }
 
+    onFileChangejson(event: any) {
+    if (event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
+  }
+  async onSubmitjson() {
+    if (!this.selectedFile) {
+      this.toastr.error('Please select a file to upload');
+      return;
+    }
+               this.spinner.show();
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+
+  await  this.http.post('http://localhost:5000/api/upload-file', formData).subscribe(
+       (response) => {
+      if (response) {
+this.getEmployeesdata()
+        this.toastr.success('File uploaded successfully');
+}
+
+      },
+      (error) => {
+
+              this.spinner.hide();
+        console.error('Error uploading file:', error);
+
+        this.toastr.error('Failed to upload file');
+      }
+    );
+  }
   async onSubmit() {
     if (this.userForm.invalid) {
       return;

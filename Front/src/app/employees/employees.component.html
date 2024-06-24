@@ -30,51 +30,29 @@
       <button class="btn btn-outline-info py-2 px-3 fs--1" type="button"
         data-bs-toggle="modal"
         data-bs-target="#offcanvasRight">New Month</button>
-      <div class="modal modal-lg fade" id="offcanvasRight" tabindex="-1"
-        aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="ModalLabel">Create User</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-
-                  <div class="form-group mt-xxl-7">
-                    <label
-                      class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Json
-                      File</label>
-                    <button id="select-files"
-                      class="btn btn-outline-primary mb-1">Click me to upload
-                      files</button>
-                    <form id="dpz-btn-select-files"
-                      class="dropzone file-upload bg-light-200 border-gray-200">
-                      <div class="d-flex align-items-center gap-3 w-auto">
-                        <div class="bg-primary rounded-2 p-3 w-auto">
-                          <img src="assets/img/svg/cloud-upload.svg" alt="img">
-                        </div>
-                        <div class="dz-message position-relative text-start"
-                          data-dz-message>
-                          <p class="mb-0 fw-semibold text-dark">Upload File</p>
-                          <small class="mb-0 fw-semibold text-gray">PDF, DOC,
-                            PPT, JPG, PNG</small>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-warning btn-sm px-2"
-                data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-success btn-sm px-2"
-                (click)="onSubmit()">Save changes</button>
-            </div>
+      <div class="modal modal-lg fade" id="offcanvasRight" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ModalLabel">New Month</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="form-group mt-xxl-7">
+            <label class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Json File</label>
+            <input type="file" (change)="onFileChangejson($event)" class="form-control mt-4">
           </div>
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success btn-sm px-2" (click)="onSubmitjson()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
       <!-- Update Modal -->
       <div class="modal modal-lg fade" id="updateModal" tabindex="-1"

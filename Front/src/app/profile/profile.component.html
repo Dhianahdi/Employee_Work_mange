@@ -30,8 +30,7 @@
                 <div class="card-img d-flex align-items-center gap-3">
                   <span class="d-inline-block bg-secondary text-white"><i
                       class="bi bi-check-square-fill"></i></span>
-                  <h5 class="mb-0 text-white fw-semibold">Total Heures
-                    Normales</h5>
+                  <h5 class="mb-0 text-white fw-semibold">Normal hours</h5>
                 </div>
                 <div class="card-content mt-4 mb-4">
                   <h3
@@ -53,8 +52,8 @@
                 <div class="card-img d-flex align-items-center gap-3">
                   <span class="d-inline-block bg-primary text-white"><i
                       class="bi bi-lightbulb-fill"></i></span>
-                  <h5 class="mb-0 text-white fw-semibold">total Heures
-                    Supplementaires</h5>
+                  <h5 class="mb-0 text-white fw-semibold">
+                    Supplementarily Hours</h5>
                 </div>
                 <div class="card-content mt-4 mb-4">
                   <h3
@@ -76,8 +75,7 @@
                 <div class="card-img d-flex align-items-center gap-3">
                   <span class="d-inline-block bg-info text-white"><i
                       class="bi bi-bookmarks-fill"></i></span>
-                  <h5 class="mb-0 text-white fw-semibold">Total Heures
-                    Samedi</h5>
+                  <h5 class="mb-0 text-white fw-semibold">Saturdays Hours</h5>
                 </div>
                 <div class="card-content mt-4 mb-4">
                   <h3
@@ -97,8 +95,7 @@
                 <div class="card-img d-flex align-items-center gap-3">
                   <span class="d-inline-block bg-info text-white"><i
                       class="bi bi-bookmarks-fill"></i></span>
-                  <h5 class="mb-0 text-white fw-semibold">total Heures
-                    Dimanche</h5>
+                  <h5 class="mb-0 text-white fw-semibold">Sundays Hours</h5>
                 </div>
                 <div class="card-content mt-4 mb-4">
                   <h3
@@ -159,13 +156,7 @@
                 {{employeedata1.absences.length}} Days</h4>
             </div>
             <div class="ms-auto">
-              <div>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#add-event"
-                  class="btn btn-primary w-100 rounded-2 py-3">
-                  <span class="align-middle"><i class="bi bi-plus"></i></span>
-                  Create New Event
-                </a>
-              </div>
+            
             </div>
           </div>
           <div class="card-body">
@@ -194,10 +185,15 @@
           <div class="card border-0 p-5">
             <div
               class="card-header pb-5 bg-transparent border-0 d-flex align-items-center justify-content-between gap-3">
-              <h4 class="mb-0">Check List</h4>
+              <h4 class="mb-0">Check List :{{employeedata1.employeeDetails.length}} Days</h4>
               <div class="ms-auto d-flex align-items-center gap-3">
 
+
+
+
+
               </div>
+              
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
@@ -252,43 +248,35 @@
                           style="width: 19px;"></th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <ng-container *ngIf="employeedata1">
-                        <ng-container
-                          *ngFor="let point of employeedata1.employeeDetails">
-                          <tr>
-                            <td class="sorting_1">
-                              <input type="checkbox" class="form-check-input"
-                                id="checkbox1" value>
-                            </td>
-                            <td><h5>{{ displayPoint(point.points[0])
-                                }}</h5></td>
-                            <td><h5>{{ displayPoint(point.points[1])
-                                }}</h5></td>
-                            <td><h5>{{ displayPoint(point.points[2])
-                                }}</h5></td>
-                            <td><h5>{{ displayPoint(point.points[3])
-                                }}</h5></td>
-                            <td>{{ point.jour }}:{{ point.date }}</td>
-                            <td>
-                              <div class="dropdown">
-                                <a href="#" data-bs-toggle="dropdown"
-                                  class="fs-24 text-gray">
-                                  <i class="bi bi-three-dots-vertical"></i>
-                                </a>
-                                <div class="dropdown-menu p-0">
-                                  <a class="dropdown-item"
-                                    href="checkin.html">View</a>
-                                  <a class="dropdown-item" href="#">Edit</a>
-                                  <a class="dropdown-item text-danger"
-                                    href="#">Delete</a>
-                                </div>
-                              </div>
-                            </td>
-                          </tr>
-                        </ng-container>
-                      </ng-container>
-                    </tbody>
+                 <tbody>
+  <ng-container *ngIf="employeedata1">
+    <ng-container *ngFor="let point of employeedata1.employeeDetails">
+      <tr>
+        <td class="sorting_1">
+          <input type="checkbox" class="form-check-input" id="checkbox1" value>
+        </td>
+        <td><h5 [ngClass]="{'blink-red': isExceedingTime(displayPoint(point.points[0]))}">{{ displayPoint(point.points[0]) }}</h5></td>
+        <td><h5 >{{ displayPoint(point.points[1]) }}</h5></td>
+        <td><h5 >{{ displayPoint(point.points[2]) }}</h5></td>
+        <td><h5 >{{ displayPoint(point.points[3]) }}</h5></td>
+        <td [ngClass]="{'blink-red': isExceedingTime(displayPoint(point.points[0]))}">{{ point.jour }}:{{ point.date }}</td>
+        <td>
+          <div class="dropdown">
+            <a href="#" data-bs-toggle="dropdown" class="fs-24 text-gray">
+              <i class="bi bi-three-dots-vertical"></i>
+            </a>
+            <div class="dropdown-menu p-0">
+              <a class="dropdown-item" href="checkin.html">View</a>
+              <a class="dropdown-item" href="#">Edit</a>
+              <a class="dropdown-item text-danger" href="#">Delete</a>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </ng-container>
+</tbody>
+
                   </table>
 
                   <div class="dataTables_info" id="table-3_info" role="status"

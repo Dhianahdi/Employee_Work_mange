@@ -17,6 +17,7 @@ import { AdduserComponent } from './adduser/adduser.component';
 const routes: Routes = [
   // Public Routes
 
+  { path: '', component: EmployeesComponent }, // Include the email parameter
 
   { path: 'admin', component: AdminComponent }, // Include the email parameter
   { path: 'approval', component: AuthorizationComponent }, // Include the email parameter

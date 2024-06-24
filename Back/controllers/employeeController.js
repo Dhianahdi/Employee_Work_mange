@@ -166,9 +166,15 @@ function convertMinutesToHours(minutes) {
 }
 
 
-exports.groupPointsByEmployee = (req, res) => {
+exports.groupPointsByEmployee = async (req, res) => {
   const filePath = path.join(__dirname, '../file/test.json');
-
+ // Clear the EmployeePoints collection before processing
+  try {
+    await EmployeePoints.deleteMany({});
+  } catch (err) {
+    console.error('Error clearing EmployeePoints collection:', err);
+    return res.status(500).json({ error: 'Failed to clear EmployeePoints collection' });
+  }
   fs.readFile(filePath, 'utf8', async (err, data) => {
     if (err) {
       console.error('Error reading JSON file:', err);

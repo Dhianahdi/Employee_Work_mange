@@ -1,0 +1,10 @@
+.blink-red {
+  animation: blink-animation 1s steps(5, start) infinite;
+  background-color: red;
+}
+
+@keyframes blink-animation {
+  to {
+    visibility: hidden;
+  }
+}
