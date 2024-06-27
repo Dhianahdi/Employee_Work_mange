@@ -32,10 +32,8 @@ async function getUniqueMatricule() {
 
 exports.createEmployee = async (req, res) => {
   try {
-    const matricule = await getUniqueMatricule();
     const newEmployee = new Employee({
       ...req.body,
-      matricule: matricule
     });
     const savedEmployee = await newEmployee.save();
     res.status(201).json(savedEmployee);
@@ -119,7 +117,6 @@ const joursFeries = [
   '25/07', // Fête de la République
   '13/08', // Fête de la Femme
   '15/10', // Fête de l'Évacuation
-  // Ajouter les jours fériés variables ici
 ];
 
 function calculateWorkingHours(points, length) {
@@ -168,13 +165,14 @@ function convertMinutesToHours(minutes) {
 
 exports.groupPointsByEmployee = async (req, res) => {
   const filePath = path.join(__dirname, '../file/test.json');
- // Clear the EmployeePoints collection before processing
+  
   try {
     await EmployeePoints.deleteMany({});
   } catch (err) {
     console.error('Error clearing EmployeePoints collection:', err);
     return res.status(500).json({ error: 'Failed to clear EmployeePoints collection' });
   }
+
   fs.readFile(filePath, 'utf8', async (err, data) => {
     if (err) {
       console.error('Error reading JSON file:', err);
@@ -182,20 +180,20 @@ exports.groupPointsByEmployee = async (req, res) => {
     }
 
     try {
-      const jsonData = JSON.parse(data); // Parser les données JSON du fichier
+      const jsonData = JSON.parse(data); // Parse JSON data from file
 
-      // Objet pour stocker les résultats groupés
+      // Object to store grouped results
       const groupedResults = {};
 
-      // Boucler à travers les données JSON
+      // Loop through JSON data
       jsonData.forEach((item) => {
         const { Matricule, DateHeure } = item;
 
-        // Extraire la partie date de DateHeure
+        // Extract the date part of DateHeure
         const datePart = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD');
-        const dayName = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('dddd'); // Obtenir le nom du jour
+        const dayName = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('dddd'); // Get the day name
 
-        // Vérifier si la clé Matricule existe dans groupedResults
+        // Check if Matricule key exists in groupedResults
         if (!groupedResults[Matricule]) {
           groupedResults[Matricule] = {
             details: {},
@@ -203,46 +201,61 @@ exports.groupPointsByEmployee = async (req, res) => {
             totalHeuresSupplementaires: 0,
             totalHeuresSamedi: 0,
             totalHeuresDimanche: 0,
-            absences: [] // Initialiser le tableau des absences
+            absences: [] // Initialize absences array
           };
         }
 
-        // Vérifier si la clé datePart existe dans groupedResults[Matricule].details
+        // Check if datePart key exists in groupedResults[Matricule].details
         if (!groupedResults[Matricule].details[datePart]) {
           groupedResults[Matricule].details[datePart] = {
             points: [],
             jour: dayName,
-            erreur: 'non', // Par défaut, pas d'erreur
+            erreur: 'non', // Default to no error
             heuresTravail: 0,
             heuresNormales: 0,
             heuresSupplementaires: 0,
           };
         }
 
-        // Ajouter l'heure de pointage à groupedResults[Matricule].details[datePart].points
+        // Add point time to groupedResults[Matricule].details[datePart].points
         groupedResults[Matricule].details[datePart].points.push(moment(DateHeure, 'DD/MM/YYYY HH:mm').format('HH:mm'));
       });
 
-      // Calculer les heures de travail et vérifier les erreurs
+      // Remove points with <= 5 minutes difference and calculate working hours
       Object.keys(groupedResults).forEach((matricule) => {
         Object.keys(groupedResults[matricule].details).forEach((datePart) => {
           const points = groupedResults[matricule].details[datePart].points;
+          const filteredPoints = [];
+
+          for (let i = 0; i < points.length; i++) {
+
+            if (i === 0 || moment(points[i], 'HH:mm').diff(moment(points[i - 1], 'HH:mm'), 'minutes') > 14) {
+
+              filteredPoints.push(points[i]);
+            }
+          }
+
+          groupedResults[matricule].details[datePart].points = filteredPoints;
+
           const dayName = groupedResults[matricule].details[datePart].jour;
 
-          if (points.length !== 4 && points.length !== 3 && points.length !== 2) {
+          if (filteredPoints.length !== 4 && filteredPoints.length !== 3 && filteredPoints.length !== 2) {
             groupedResults[matricule].details[datePart].erreur = 'oui';
           } else {
-            // Calculer les heures de travail
-            const heuresTravail = calculateWorkingHours(points, points.length);
+            // Calculate working hours
+            const heuresTravail = calculateWorkingHours(filteredPoints, filteredPoints.length);
             groupedResults[matricule].details[datePart].heuresTravail = heuresTravail;
 
             const [hours, minutes] = heuresTravail.split(':').map(Number);
             const totalMinutes = hours * 60 + minutes;
 
-            if (totalMinutes > 480) {
+            if (totalMinutes > 540) { // More than 9 hours (540 minutes)
               groupedResults[matricule].details[datePart].heuresNormales = '8:00';
               const heuresSupplementaires = totalMinutes - 480;
               groupedResults[matricule].details[datePart].heuresSupplementaires = `${Math.floor(heuresSupplementaires / 60)}:${(heuresSupplementaires % 60).toString().padStart(2, '0')}`;
+            } else if (totalMinutes > 535 && totalMinutes <= 540) { // Between 8 and 9 hours (480-540 minutes)
+              groupedResults[matricule].details[datePart].heuresNormales = '8:00';
+              groupedResults[matricule].details[datePart].heuresSupplementaires = '1:00';
             } else {
               groupedResults[matricule].details[datePart].heuresNormales = heuresTravail;
               groupedResults[matricule].details[datePart].heuresSupplementaires = '0:00';
@@ -260,13 +273,13 @@ exports.groupPointsByEmployee = async (req, res) => {
           }
         });
 
-        // Convertir les totaux de minutes en format hh:mm
+        // Convert total minutes to hh:mm format
         groupedResults[matricule].totalHeuresNormales = convertMinutesToHours(groupedResults[matricule].totalHeuresNormales);
         groupedResults[matricule].totalHeuresSupplementaires = convertMinutesToHours(groupedResults[matricule].totalHeuresSupplementaires);
         groupedResults[matricule].totalHeuresSamedi = convertMinutesToHours(groupedResults[matricule].totalHeuresSamedi);
         groupedResults[matricule].totalHeuresDimanche = convertMinutesToHours(groupedResults[matricule].totalHeuresDimanche);
 
-        // Détection des absences
+        // Detect absences
         const employeeDates = Object.keys(groupedResults[matricule].details);
         const allDates = [];
         for (let d = moment(employeeDates[0]); d.isBefore(moment(employeeDates[employeeDates.length - 1]).add(1, 'days')); d.add(1, 'days')) {
@@ -277,7 +290,7 @@ exports.groupPointsByEmployee = async (req, res) => {
         }
       });
 
-      // Enregistrer les résultats dans la base de données
+      // Save results to the database
       for (const matricule in groupedResults) {
         if (groupedResults.hasOwnProperty(matricule)) {
           const employeeData = groupedResults[matricule];
@@ -289,7 +302,7 @@ exports.groupPointsByEmployee = async (req, res) => {
         }
       }
 
-      // Envoyer la réponse JSON avec les données groupées et calculées
+      // Send JSON response with grouped and calculated data
       res.json(groupedResults);
     } catch (error) {
       console.error('Error parsing JSON:', error);
@@ -297,6 +310,58 @@ exports.groupPointsByEmployee = async (req, res) => {
     }
   });
 };
+
+
+// Helper functions
+function calculateWorkingHours(points, length) {
+  let startTime, endTime, midStartTime, midEndTime;
+
+  if (length === 2) {
+    [startTime, endTime] = points;
+    return diffTime(startTime, endTime);
+  } else if (length === 3) {
+    [startTime, midStartTime, endTime] = points;
+    return subtractOneHour(diffTime(startTime, endTime));
+  } else if (length === 4) {
+    [startTime, midStartTime, midEndTime, endTime] = points;
+    return addTimes(diffTime(startTime, midStartTime), diffTime(midEndTime, endTime));
+  }
+  return '0:00';
+}
+function subtractOneHour(time) {
+  const [hours, minutes] = time.split(':').map(Number);
+  const totalMinutes = (hours * 60 + minutes) - 60;
+  return convertMinutesToHours(totalMinutes);
+}
+
+function diffTime(start, end) {
+  const [startHours, startMinutes] = start.split(':').map(Number);
+  const [endHours, endMinutes] = end.split(':').map(Number);
+
+  let diff = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+  if (diff < 0) diff += 24 * 60; // handle overnight times
+
+  const hours = Math.floor(diff / 60);
+  const minutes = diff % 60;
+  return `${hours}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function addTimes(time1, time2) {
+  const [hours1, minutes1] = time1.split(':').map(Number);
+  const [hours2, minutes2] = time2.split(':').map(Number);
+
+  const totalMinutes = (hours1 * 60 + minutes1) + (hours2 * 60 + minutes2);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${hours}:${minutes.toString().padStart(2, '0')}`;
+}
+
+function convertMinutesToHours(minutes) {
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}:${remainingMinutes.toString().padStart(2, '0')}`;
+}
 
 function convertMinutesToHours(minutes) {
   const hours = Math.floor(minutes / 60);

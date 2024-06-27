@@ -21,7 +21,10 @@ export class EmployeesComponent implements OnInit {
   imageSrc: string | ArrayBuffer | null = null;
   selectedEmployee: any = null;
   selectedFile: File | null = null;
-
+  dpOptions: { value: boolean, label: string }[] = [
+    { value: true, label: 'Yes' },
+    { value: false, label: 'No' }
+  ];
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -31,7 +34,10 @@ export class EmployeesComponent implements OnInit {
   ) {
     this.userForm = this.fb.group({
       nom: ['', Validators.required],
-      image: [null]
+      matricule: ['', Validators.required],
+      image: [null],
+      DP: [false, Validators.required]
+
     });
     this.authForm = this.fb.group({
       matricule: [{ value: '' }, Validators.required],
@@ -41,7 +47,9 @@ export class EmployeesComponent implements OnInit {
 
     this.updateForm = this.fb.group({
       nom: ['', Validators.required],
-      image: [null]
+      image: [null],
+            DP: [false, Validators.required]
+
     });
   }
 
@@ -97,8 +105,9 @@ export class EmployeesComponent implements OnInit {
 }
   }
 
-  navigateprofile(mat: string) {
+  navigateprofile(mat: string,DP: string) {
     localStorage.setItem('mat', mat);
+    localStorage.setItem('dp', DP);
     this.router.navigate(['/profile']);
   }
 
@@ -130,12 +139,57 @@ export class EmployeesComponent implements OnInit {
       );
     }
   }
+fileContent: string = '';
+jsonContent: any;
 
-    onFileChangejson(event: any) {
+
+
+   readTextFile(file: File) {
+    let fileReader: FileReader = new FileReader();
+    fileReader.onloadend = () => {
+      this.fileContent = fileReader.result as string;
+      console.log('Contenu du fichier:', this.fileContent);
+
+      try {
+        // Supposons que le fichier soit au format CSV, convertissez-le en JSON
+        this.jsonContent = this.convertCSVToJSON(this.fileContent);
+        console.log('Contenu JSON:', this.jsonContent);
+      } catch (e) {
+        console.error('Erreur lors de la conversion en JSON:', e);
+      }
+    };
+    fileReader.readAsText(file);
+  }
+
+  onFileChangejson(event: any) {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
+      this.readTextFile(event.target.files[0]);
     }
   }
+
+  convertCSVToJSON(csv: string): any[] {
+    const lines = csv.split('\n').filter(line => line.trim() !== ''); // Filtrer les lignes vides
+    const result = [];
+    const headers = lines[0].split('\t').map(header => header.trim()); // Supposons que le séparateur soit une tabulation
+
+    for (let i = 1; i < lines.length; i++) {
+      const obj: any = {};
+      const currentLine = lines[i].split('\t');
+
+      if (currentLine.length === headers.length) { // Vérifier si le nombre de colonnes correspond
+        for (let j = 0; j < headers.length; j++) {
+          obj[headers[j]] = currentLine[j].trim();
+        }
+        result.push(obj);
+      } else {
+        console.warn(`La ligne ${i + 1} ne contient pas le même nombre de colonnes que la ligne d'en-tête.`);
+      }
+    }
+
+    return result;
+  }
+
   async onSubmitjson() {
     if (!this.selectedFile) {
       this.toastr.error('Please select a file to upload');
@@ -163,6 +217,11 @@ this.getEmployeesdata()
       }
     );
   }
+
+
+
+
+
   async onSubmit() {
     if (this.userForm.invalid) {
       return;
@@ -170,8 +229,9 @@ this.getEmployeesdata()
 
     const formData = new FormData();
     formData.append('nom', this.userForm.get('nom')?.value);
+    formData.append('matricule', this.userForm.get('matricule')?.value);
     formData.append('image', this.userForm.get('image')?.value);
-
+console.log(this.userForm)
     try {
       const response = await this.http.post('http://127.0.0.1:5000/api/employee', this.userForm.value).toPromise();
       this.toastr.success('Employee created successfully');
@@ -187,7 +247,8 @@ this.getEmployeesdata()
     this.updateForm.patchValue({
       matricule: employee.matricule,
       nom: employee.nom,
-      image: employee.image
+      image: employee.image,
+      DP: employee.DP,
     });
     this.authForm.patchValue({
       matricule: employee.matricule,

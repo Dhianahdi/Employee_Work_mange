@@ -5,6 +5,7 @@ const employeeSchema = new mongoose.Schema({
   nom: { type: String},
   matricule: { type: String},
   image: { type: String, default: 'user.png' },
+  DP:{ type: Boolean, default: false},
 
 })
 

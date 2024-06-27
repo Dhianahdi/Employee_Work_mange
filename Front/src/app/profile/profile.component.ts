@@ -39,10 +39,8 @@ data:any
   matricule: any
   constructor(private http: HttpClient, private router: Router,private spinner: NgxSpinnerService) { }
       removeLeadingZeros(matricule:any) {
-      // Convert the matricule to a number, which will remove leading zeros
       let numberWithoutZeros = parseInt(matricule, 10);
 
-      // If the input was "000", the result should be "0" instead of an empty string or NaN
       if (isNaN(numberWithoutZeros)) {
         return '0';
       }
@@ -50,7 +48,7 @@ data:any
       return numberWithoutZeros.toString();
       }
 
-      
+
  async getEmployees() {
    try {
          this.spinner.show();
@@ -95,24 +93,19 @@ hoursToDays(hoursMinutes:any) {
  }
    console.log(employees)
     employees.forEach((employee:any) => {
-      // Obtenez la date et le nom du jour à partir de la propriété "jour"
       const dateStr = employee.jour;
       const dayOfWeek = this.getDayOfWeek(dateStr);
 
-      // Obtenez la liste des points de l'employé
       const points = employee.points;
 
-      // Ajoutez ces informations à votre structure de données de sortie
       this.processedData.push({ date: `${dayOfWeek}, ${dateStr}`, points: points });
     });
 console.log(this.processedData)
   }
 
   getDayOfWeek(dateStr: string): string {
-    // Convertissez la chaîne de date en un objet Date JavaScript
     const date = new Date(dateStr);
 
-    // Obtenez le nom du jour de la semaine (en anglais, vous pouvez le traduire si nécessaire)
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const dayOfWeek = days[date.getDay()];
 
@@ -157,8 +150,65 @@ console.log(this.processedData)
 
 
   isExceedingTime(time: string): boolean {
+    const dp=localStorage.getItem("dp")
     const thresholdTime = moment('08:15', 'HH:mm');
+    const thresholdTime0 = moment('16:55', 'HH:mm');
+    const thresholdTime1 = moment('13:42', 'HH:mm');
+    const thresholdTime2 = moment('17:15', 'HH:mm');
+    const thresholdTime3 = moment('07:12', 'HH:mm');
+    const thresholdTime4 = moment('12:45', 'HH:mm');
     const pointTime = moment(time, 'HH:mm');
-    return pointTime.isAfter(thresholdTime);
+    if (dp === "false") {
+          return pointTime.isBetween(thresholdTime,thresholdTime0);
+
+    } else {
+
+                return (pointTime.isBetween(thresholdTime1,thresholdTime2)||pointTime.isBetween(thresholdTime3,thresholdTime4));
+
+    }
+  }
+
+
+  getStatus(point: any): string {
+         const dp=localStorage.getItem("dp")
+    const firstPoint = moment(point.points[0], ' HH:mm');
+    const lastPoint = moment(point.points[point.points.length - 1], 'HH:mm');
+    const datePart = moment(point.date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+console.log(datePart)
+    if (dp === "false") {
+
+      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))) {
+        return 'Ok';
+      }
+      const hasAuthorization = this.employeedata2.some((authorization: any) =>
+        moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
+      );
+      if (hasAuthorization) {
+        return 'With Authorization';
+      }
+    }
+    if (dp === "true") {
+
+      if (firstPoint.isBefore(moment('07:14', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('13:55', 'HH:mm'))) {
+        return 'Ok';
+
+        }
+      } else {
+          if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('20:25', 'HH:mm'))) {
+        return 'Ok';
+
+        }
+      }
+      }
+      const hasAuthorization = this.employeedata2.some((authorization: any) =>
+        moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
+      );
+      if (hasAuthorization) {
+        return 'With Authorization';
+      }
+    }
+    return 'Not Ok';
   }
 }

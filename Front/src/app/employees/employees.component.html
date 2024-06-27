@@ -30,29 +30,35 @@
       <button class="btn btn-outline-info py-2 px-3 fs--1" type="button"
         data-bs-toggle="modal"
         data-bs-target="#offcanvasRight">New Month</button>
-      <div class="modal modal-lg fade" id="offcanvasRight" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="ModalLabel">New Month</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="form-group mt-xxl-7">
-            <label class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Json File</label>
-            <input type="file" (change)="onFileChangejson($event)" class="form-control mt-4">
+      <div class="modal modal-lg fade" id="offcanvasRight" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ModalLabel">New Month</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="form-group mt-xxl-7">
+                  <label
+                    class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Json
+                    File</label>
+                  <input type="file" (change)="onFileChangejson($event)"
+                    class="form-control mt-4">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning btn-sm px-2"
+                data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success btn-sm px-2"
+                (click)="onSubmitjson()">Save changes</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-success btn-sm px-2" (click)="onSubmitjson()">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 
       <!-- Update Modal -->
       <div class="modal modal-lg fade" id="updateModal" tabindex="-1"
@@ -77,6 +83,17 @@
                             Name</label>
                           <input type="text" class="form-control"
                             formControlName="nom" placeholder="Full Name">
+                          <div>
+                            <label
+                              class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300"
+                              for="dp">Double </label>
+                            <select class="form-control" id="dp"
+                              formControlName="DP">
+                              <option *ngFor="let option of dpOptions"
+                                [value]="option.value">{{ option.label
+                                }}</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -128,9 +145,25 @@
                         <div class="form-group">
                           <label
                             class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Full
+                            Matricule</label>
+                          <input type="number" class="form-control"
+                            formControlName="matricule" placeholder="Matricule">
+                          <label
+                            class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Full
                             Name</label>
                           <input type="text" class="form-control"
                             formControlName="nom" placeholder="Full Name">
+                          <div>
+                            <label
+                              class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300"
+                              for="dp">Double </label>
+                            <select class="form-control" id="dp"
+                              formControlName="DP">
+                              <option *ngFor="let option of dpOptions"
+                                [value]="option.value">{{ option.label
+                                }}</option>
+                            </select>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -258,7 +291,7 @@
             </div>
           </div>
           <div class="card-body"
-            (click)="navigateprofile(employee.matricule)">
+            (click)="navigateprofile(employee.matricule,employee.DP)">
 
             <div class="mb-5 text-center">
 
