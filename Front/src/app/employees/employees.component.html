@@ -30,6 +30,13 @@
       <button class="btn btn-outline-info py-2 px-3 fs--1" type="button"
         data-bs-toggle="modal"
         data-bs-target="#offcanvasRight">New Month</button>
+          <button class="btn btn-success text-white" type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#fileModal">Generate file</button>
+
+
+              <!-- offcanvasRight Modal -->
+
       <div class="modal modal-lg fade" id="offcanvasRight" tabindex="-1"
         aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -54,7 +61,36 @@
               <button type="button" class="btn btn-warning btn-sm px-2"
                 data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-success btn-sm px-2"
-                (click)="onSubmitjson()">Save changes</button>
+                (click)="onSubmitjson()">Upload</button>
+            </div>
+          </div>
+        </div>
+      </div>
+             <!-- file Modal -->
+
+      <div class="modal modal-lg fade" id="fileModal" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ModalLabel">Generate employees file</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="form-group mt-xxl-7">
+                  <label
+                    class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Do you want to generate the file of this month</label>
+
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-warning btn-sm px-2"
+                data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-success btn-sm px-2"
+                (click)="exportToExcel()">OK</button>
             </div>
           </div>
         </div>
@@ -83,6 +119,10 @@
                             Name</label>
                           <input type="text" class="form-control"
                             formControlName="nom" placeholder="Full Name">
+                            <label
+                            class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Phone</label>
+                          <input type="text" class="form-control"
+                            formControlName="tel" placeholder="Full Name">
                           <div>
                             <label
                               class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300"

@@ -48,7 +48,22 @@ data:any
       return numberWithoutZeros.toString();
       }
 
+filterDates(data: any[]): any[] {
+  const today = moment();
+  const lastMonth26 = moment().subtract(1, 'month').date(26);
+  const lastMonth26Str = lastMonth26.format('MM/DD/YYYY ');
+    const itemDate26 = moment(lastMonth26Str, 'MM/DD/YYYY');
 
+  return data.filter(item => {
+        let itemDate = moment(item.DateHeure).format('MM/DD/YYYY');
+
+    const itemDate2 = moment(itemDate, 'MM/DD/YYYY');
+
+    return itemDate2.isAfter(itemDate26);
+  });
+}
+
+  
  async getEmployees() {
    try {
          this.spinner.show();
@@ -60,10 +75,10 @@ this.matricule=localStorage.getItem('mat')
     const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' + (this.matricule)).toPromise();
       this.employee = response;
      this.employeedata = response1 ;
-     this.employeedata1 = response2 ;
-     this.employeedata2 = response3;
+     this.employeedata1 = response2;
+   //  console.log(response3)
+     this.employeedata2 = this.filterDates(response3);
      this.data=this.calculateTotalAuthorizationTime(this.employeedata2)
-console.log( response3)
 
     } catch (error) {
       console.error('Error fetching employees:', error);
@@ -80,8 +95,8 @@ hoursToDays(hoursMinutes:any) {
 
   const totalMinutes = (hours * 60) + minutes;
 
-  const days = Math.floor(totalMinutes / (24 * 60));
-  const remainingMinutes = totalMinutes % (24 * 60);
+  const days = Math.floor(totalMinutes / (8 * 60));
+  const remainingMinutes = totalMinutes % (8 * 60);
   const remainingHours = Math.floor(remainingMinutes / 60);
   const remainingMinutesInHour = remainingMinutes % 60;
 
@@ -174,10 +189,10 @@ console.log(this.processedData)
     const firstPoint = moment(point.points[0], ' HH:mm');
     const lastPoint = moment(point.points[point.points.length - 1], 'HH:mm');
     const datePart = moment(point.date, 'YYYY-MM-DD').format('YYYY-MM-DD');
-console.log(datePart)
+
     if (dp === "false") {
 
-      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))) {
+      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
       }
       const hasAuthorization = this.employeedata2.some((authorization: any) =>
@@ -190,13 +205,13 @@ console.log(datePart)
     if (dp === "true") {
 
       if (firstPoint.isBefore(moment('07:14', 'HH:mm'))) {
-        if (lastPoint.isAfter(moment('13:55', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('13:55', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
 
         }
       } else {
           if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
-        if (lastPoint.isAfter(moment('20:25', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('20:25', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
 
         }

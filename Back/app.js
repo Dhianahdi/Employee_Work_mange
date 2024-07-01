@@ -131,7 +131,7 @@ const Employee = require('./models/employee'); // Assurez-vous de spécifier le 
 // const addDPAttributeToAllEmployees = async () => {
 //   try {
 //     // Mettre à jour tous les documents pour ajouter le nouvel attribut DP avec la valeur par défaut false
-//     await Employee.updateMany({}, { $set: { DP: false } });
+//     await Employee.updateMany({}, { $set: { tel: "000000" } });
 //     console.log('Tous les employés ont été mis à jour avec le nouvel attribut DP.');
 //   } catch (err) {
 //     console.error('Erreur lors de la mise à jour des employés:', err);

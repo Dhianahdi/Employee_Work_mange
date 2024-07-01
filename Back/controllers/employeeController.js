@@ -248,21 +248,24 @@ exports.groupPointsByEmployee = async (req, res) => {
 
             const [hours, minutes] = heuresTravail.split(':').map(Number);
             const totalMinutes = hours * 60 + minutes;
+              let heuresSupplementaires = 0 ;
 
             if (totalMinutes > 540) { // More than 9 hours (540 minutes)
               groupedResults[matricule].details[datePart].heuresNormales = '8:00';
-              const heuresSupplementaires = totalMinutes - 480;
+               heuresSupplementaires = totalMinutes - 480;
               groupedResults[matricule].details[datePart].heuresSupplementaires = `${Math.floor(heuresSupplementaires / 60)}:${(heuresSupplementaires % 60).toString().padStart(2, '0')}`;
             } else if (totalMinutes > 535 && totalMinutes <= 540) { // Between 8 and 9 hours (480-540 minutes)
               groupedResults[matricule].details[datePart].heuresNormales = '8:00';
               groupedResults[matricule].details[datePart].heuresSupplementaires = '1:00';
+                             heuresSupplementaires = 60;
+
             } else {
               groupedResults[matricule].details[datePart].heuresNormales = heuresTravail;
               groupedResults[matricule].details[datePart].heuresSupplementaires = '0:00';
             }
 
             groupedResults[matricule].totalHeuresNormales += Math.min(totalMinutes, 480);
-            groupedResults[matricule].totalHeuresSupplementaires += Math.max(totalMinutes - 480, 0);
+            groupedResults[matricule].totalHeuresSupplementaires += heuresSupplementaires;
 
             if (dayName === 'Saturday') {
               groupedResults[matricule].totalHeuresSamedi += totalMinutes;
@@ -278,7 +281,6 @@ exports.groupPointsByEmployee = async (req, res) => {
         groupedResults[matricule].totalHeuresSupplementaires = convertMinutesToHours(groupedResults[matricule].totalHeuresSupplementaires);
         groupedResults[matricule].totalHeuresSamedi = convertMinutesToHours(groupedResults[matricule].totalHeuresSamedi);
         groupedResults[matricule].totalHeuresDimanche = convertMinutesToHours(groupedResults[matricule].totalHeuresDimanche);
-
         // Detect absences
         const employeeDates = Object.keys(groupedResults[matricule].details);
         const allDates = [];

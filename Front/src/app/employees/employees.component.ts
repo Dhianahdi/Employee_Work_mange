@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import * as moment from 'moment';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
@@ -47,6 +49,7 @@ export class EmployeesComponent implements OnInit {
 
     this.updateForm = this.fb.group({
       nom: ['', Validators.required],
+      tel: ['', Validators.required],
       image: [null],
             DP: [false, Validators.required]
 
@@ -169,15 +172,15 @@ jsonContent: any;
   }
 
   convertCSVToJSON(csv: string): any[] {
-    const lines = csv.split('\n').filter(line => line.trim() !== ''); // Filtrer les lignes vides
+    const lines = csv.split('\n').filter(line => line.trim() !== '');
     const result = [];
-    const headers = lines[0].split('\t').map(header => header.trim()); // Supposons que le séparateur soit une tabulation
+    const headers = lines[0].split('\t').map(header => header.trim());
 
     for (let i = 1; i < lines.length; i++) {
       const obj: any = {};
       const currentLine = lines[i].split('\t');
 
-      if (currentLine.length === headers.length) { // Vérifier si le nombre de colonnes correspond
+      if (currentLine.length === headers.length) {
         for (let j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentLine[j].trim();
         }
@@ -249,6 +252,7 @@ console.log(this.userForm)
       nom: employee.nom,
       image: employee.image,
       DP: employee.DP,
+      tel: employee.tel,
     });
     this.authForm.patchValue({
       matricule: employee.matricule,
@@ -329,4 +333,104 @@ console.log(this.userForm)
       preloader.style.display = 'none';
     }
   }
+   removeLeadingZeros(matricule:any) {
+      let numberWithoutZeros = parseInt(matricule, 10);
+
+      if (isNaN(numberWithoutZeros)) {
+        return '0';
+      }
+
+      return numberWithoutZeros.toString();
+      }
+async exportToExcel(): Promise<void> {
+  const employeeData = [];
+               this.spinner.show();
+
+  for (const employee of this.employees) {
+    try {
+      const response1 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/' + this.removeLeadingZeros(employee.matricule)).toPromise();
+      // const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(employee.matricule)).toPromise();
+       const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' + employee.matricule).toPromise();
+      const absences = response1.absences;
+
+      const delays = this.getDelays(response1.details);
+  // Parcourir la liste des absences et les regrouper dans un string
+      let absencesStr = '';
+      if (absences && absences.length > 0) {
+        absencesStr = absences.map((absence: any) => absence).join(', ');
+      }
+      console.log(absencesStr)
+
+      // for (const absence of absences) {
+        employeeData.push({
+          Nom: employee.nom,
+          Matricule: employee.matricule,
+           Absence: absencesStr,
+        //   Type: 'Absence',
+         Authorization: response3
+        });
+    //  }
+
+      // for (const delay of delays) {
+      //   employeeData.push({
+      //     Nom: employee.nom,
+      //     Matricule: employee.matricule,
+      //     Date: delay.date,
+      //     Type: 'Delay',
+      //     Authorization: response3.some((auth: any) => auth.dateDebut === delay.date) ? 'With Authorization' : 'Without Authorization'
+      //   });
+      // }
+    } catch (error: any) {
+      if (error.status === 404) {
+        console.log(`Employee with matricule ${employee.matricule} not found, skipping...`);
+      } else {
+        console.error(`Error processing employee with matricule ${employee.matricule}:`, error);
+      }
+    }
+  }
+
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(employeeData);
+  const workbook: XLSX.WorkBook = { Sheets: { 'Employee Data': worksheet }, SheetNames: ['Employee Data'] };
+  const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  this.saveAsExcelFile(excelBuffer, 'EmployeeData');
+        this.spinner.hide();
+
+}
+
+// Example function to calculate absences
+getAbsences(details: any): any[] {
+  const absences = [];
+  for (const date in details) {
+    if (details[date].erreur === 'oui') {
+      absences.push({ date });
+    }
+  }
+  return absences;
+}
+
+// Example function to calculate delays
+getDelays(details: any): any[] {
+  const delays = [];
+  for (const date in details) {
+    if (details[date].points.length > 0) {
+      const firstPoint = moment(details[date].points[0], 'HH:mm');
+      const lastPoint = moment(details[date].points[details[date].points.length - 1], 'HH:mm');
+      if (firstPoint.isAfter(moment('08:30', 'HH:mm')) || lastPoint.isBefore(moment('16:45', 'HH:mm'))) {
+        delays.push({ date });
+      }
+    }
+  }
+  return delays;
+}
+
+
+
+  private saveAsExcelFile(buffer: any, fileName: string): void {
+    const data: Blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + '.xlsx');
+    console.log("done")
+  }
+
+
+
 }
