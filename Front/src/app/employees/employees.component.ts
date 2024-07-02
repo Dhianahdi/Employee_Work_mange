@@ -15,6 +15,7 @@ import * as FileSaver from 'file-saver';
 export class EmployeesComponent implements OnInit {
   employees: any;
   employees1: any;
+  employeedata2: any;
   filteredEmployees: any[] = [];
   searchTerm: string = '';
   userForm: FormGroup;
@@ -76,10 +77,12 @@ export class EmployeesComponent implements OnInit {
     try {
 
    const response1 = await this.http.get<any[]>('http://localhost:5000/api/employee/group-points-by-employee').toPromise();
-
+ this.toastr.success('File uploaded successfully');
     } catch (error) {
+           this.toastr.error('Failed to upload file');
       console.error('Error fetching employees:', error);
     }finally {
+
       this.spinner.hide();
     }
   }
@@ -194,31 +197,13 @@ jsonContent: any;
   }
 
   async onSubmitjson() {
-    if (!this.selectedFile) {
-      this.toastr.error('Please select a file to upload');
-      return;
-    }
-               this.spinner.show();
+      this.spinner.show();
 
-    const formData = new FormData();
-    formData.append('file', this.selectedFile);
 
-  await  this.http.post('http://localhost:5000/api/upload-file', formData).subscribe(
-       (response) => {
-      if (response) {
+
+
 this.getEmployeesdata()
-        this.toastr.success('File uploaded successfully');
-}
 
-      },
-      (error) => {
-
-              this.spinner.hide();
-        console.error('Error uploading file:', error);
-
-        this.toastr.error('Failed to upload file');
-      }
-    );
   }
 
 
@@ -341,33 +326,101 @@ console.log(this.userForm)
       }
 
       return numberWithoutZeros.toString();
+   }
+   getStatus(point: any): string {
+         const dp=localStorage.getItem("dp")
+    const firstPoint = moment(point.points[0], ' HH:mm');
+    const lastPoint = moment(point.points[point.points.length - 1], 'HH:mm');
+    const datePart = moment(point.date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+
+    if (dp === "false") {
+
+      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))&&point.points.length<=4) {
+        return 'Ok';
       }
+      const hasAuthorization = this.employeedata2.some((authorization: any) =>
+        moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
+      );
+      if (hasAuthorization) {
+        return 'With Authorization';
+      }
+    }
+    if (dp === "true") {
+
+      if (firstPoint.isBefore(moment('07:14', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('13:55', 'HH:mm'))&&point.points.length<=4) {
+        return 'Ok';
+
+        }
+      } else {
+          if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
+        if (lastPoint.isAfter(moment('20:25', 'HH:mm'))&&point.points.length<=4) {
+        return 'Ok';
+
+        }
+      }
+      }
+      const hasAuthorization = this.employeedata2.some((authorization: any) =>
+        moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
+      );
+      if (hasAuthorization) {
+        return 'With Authorization';
+      }
+    }
+    return 'Not Ok';
+  }
 async exportToExcel(): Promise<void> {
   const employeeData = [];
                this.spinner.show();
 
   for (const employee of this.employees) {
+    localStorage.setItem("dp",employee.DP)
     try {
-      const response1 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/' + this.removeLeadingZeros(employee.matricule)).toPromise();
-      // const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(employee.matricule)).toPromise();
+       const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(employee.matricule)).toPromise();
        const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' + employee.matricule).toPromise();
-      const absences = response1.absences;
+this.employeedata2=response3
+      const absences = response2.absences;
+      const pointes = response2.employeeDetails;
+                    let pointsStr = '';
+         let saturdayStr = '';
+      let sandayStr = '';
+      for (const pointe of pointes) {
 
-      const delays = this.getDelays(response1.details);
-  // Parcourir la liste des absences et les regrouper dans un string
-      let absencesStr = '';
-      if (absences && absences.length > 0) {
-        absencesStr = absences.map((absence: any) => absence).join(', ');
+         const dp=localStorage.getItem("dp")
+
+if (dp === "false") {
+  if (pointe.jour === "Saturday") {
+     saturdayStr += pointe.date + " :    " + pointe.points[0]  +'::'+pointe.points[pointe.points.length - 1] + '          \n';
+  } else if (pointe.jour === "Sunday") {
+
+    sandayStr+=  pointe.date + " :    " + pointe.points[0]  +'::'+pointe.points[pointe.points.length - 1] + '          \n';
+   }
+
       }
-      console.log(absencesStr)
+
+        if ((this.getStatus(pointe) != 'Ok') ) {
+
+          pointsStr +=pointe.date + " : " + pointe.points[0]  +'::'+pointe.points[pointe.points.length - 1]  + " : " +  " => " + (this.getStatus(pointe)) + '          \n'
+
+ }
+
+      }
+
+
+      let absencesStr = '';
+
+      if (absences && absences.length > 0) {
+        absencesStr = absences.map((absence: any) => absence).join('         \n');
+      }
 
       // for (const absence of absences) {
         employeeData.push({
-          Nom: employee.nom,
           Matricule: employee.matricule,
+          Nom: employee.nom,
            Absence: absencesStr,
-        //   Type: 'Absence',
-         Authorization: response3
+         Retard: pointsStr,
+         Samedi: saturdayStr,
+         Dimanche: sandayStr,
         });
     //  }
 
@@ -431,6 +484,88 @@ getDelays(details: any): any[] {
     console.log("done")
   }
 
+  handleFile(event: any): void {
+                 this.spinner.show();
 
+  const file = event.target.files[0];
+    if (!file) {
+                     this.spinner.hide();
 
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    const data = new Uint8Array(e.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+
+    const sheetName = workbook.SheetNames[0];
+    let worksheet = workbook.Sheets[sheetName];
+
+    let sheetData:any[][] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+    sheetData[0][0] = 'Matricule';
+    sheetData[0][1] = 'DateHeure';
+
+    for (let i = 1; i < sheetData.length; i++) {
+      const cellValue = sheetData[i][1];
+      console.log(cellValue);
+      if (typeof cellValue === 'number') {
+        const date = this.convertExcelDateToJSDate(cellValue);
+        const formattedDate = this.formatDate(date);
+              console.log(formattedDate);
+
+        sheetData[i][1] = formattedDate;
+      }
+    }
+
+    worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+    const newWorkbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(newWorkbook, worksheet, sheetName);
+    const excelBuffer = XLSX.write(newWorkbook, { bookType: 'xlsx', type: 'array' });
+
+    const jsonData = this.convertExcelToJson(newWorkbook);
+
+    console.log('JSON data:', jsonData);
+    this.saveJsonDataToServer(jsonData)
+                         this.spinner.hide();
+
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+  private convertExcelToJson(workbook: XLSX.WorkBook): any[] {
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 'A' });
+  console.log( sheetData )
+
+  const jsonData = sheetData.slice(1).map((row: any) => ({
+    Matricule: row.A,
+    DateHeure: row.B
+  }));
+
+  return jsonData;
+}
+
+private convertExcelDateToJSDate(excelDate: number): Date {
+  const date = new Date((excelDate - (25567 + 2)) * 86400 * 1000);
+  return date;
+}
+
+private formatDate(date: Date): string {
+  const formattedDate = `${this.padNumber(date.getDate())}/${this.padNumber(date.getMonth() + 1)}/${date.getFullYear()} ${this.padNumber(date.getHours()-1)}:${this.padNumber(date.getMinutes())}`;
+  return formattedDate;
+}
+
+private padNumber(num: number): string {
+  return num.toString().padStart(2, '0');
+}
+
+private saveJsonDataToServer(jsonData: any): Promise<any> {
+    const url = 'http://localhost:5000/api/saveJsonData';
+
+    return this.http.post<any>(url, jsonData).toPromise();
+  }
 }

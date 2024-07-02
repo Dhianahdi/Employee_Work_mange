@@ -25,14 +25,14 @@
       <!-- Button for primary -->
       <button type="button" class="btn btn-primary py-2 px-3 mx-1"
         data-bs-toggle="modal" data-bs-target="#primaryModal">
-        Add User
+        Add Employee
       </button>
       <button class="btn btn-outline-info py-2 px-3 fs--1" type="button"
         data-bs-toggle="modal"
         data-bs-target="#offcanvasRight">New Month</button>
           <button class="btn btn-success text-white" type="button"
         data-bs-toggle="modal"
-        data-bs-target="#fileModal">Generate file</button>
+        data-bs-target="#fileModal">Generate final file</button>
 
 
               <!-- offcanvasRight Modal -->
@@ -52,7 +52,7 @@
                   <label
                     class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Json
                     File</label>
-                  <input type="file" (change)="onFileChangejson($event)"
+                  <input type="file" (change)="handleFile($event)"
                     class="form-control mt-4">
                 </div>
               </div>
@@ -61,7 +61,7 @@
               <button type="button" class="btn btn-warning btn-sm px-2"
                 data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-success btn-sm px-2"
-                (click)="onSubmitjson()">Upload</button>
+                (click)="onSubmitjson()">Save</button>
             </div>
           </div>
         </div>

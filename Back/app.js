@@ -94,7 +94,20 @@ app.post('/api/upload', imageUpload.single('file'), (req, res) => {
 
   res.send({ filename: req.file.filename })
 })
+app.post('/api/saveJsonData', (req, res) => {
+  const jsonData = req.body;
+  const filePath = path.join(__dirname, './file/test.json');
 
+  fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
+    if (err) {
+      console.error('Error writing JSON file:', err);
+      res.status(500).json({ error: 'Failed to save JSON data' });
+    } else {
+      console.log('JSON data saved successfully');
+      res.json({ message: 'JSON data saved successfully' });
+    }
+  });
+});
 // Endpoint for file uploads to 'file' directory and renaming to 'test.js'
 app.post(
   '/api/upload-file',
