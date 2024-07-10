@@ -168,9 +168,10 @@
                     <div
                       class="indicator bg-secondary me-0 mt-2 flex-shrink-0"></div>
                     <div class="user-message">
-                      <h6 class="message mb-1">  <a href="#" [ngClass]="{'text-danger': congeStatus[point] === 'Unjustified', 'text-success': congeStatus[point] === 'DayOff'}">
-    {{ congeStatus[point] }}
-  </a></h6>
+                      <h6 class="message mb-1"> <a href="#"
+                          [ngClass]="{'text-danger': congeStatus[point] === 'Unjustified', 'text-success': congeStatus[point] === 'DayOff'}">
+                          {{ congeStatus[point] }}
+                        </a></h6>
                       <p
                         class="message-footer d-flex align-items-center justify-content-between">
                         <span><i class="bi bi-calendar-fill"></i>
@@ -329,7 +330,8 @@
             <div class="card-body p-0">
               <div class="d-flex justify-content-between gap-4 p-0 mb-5">
                 <div>
-                  <img src="http://127.0.0.1:5000/img/{{ employee.image }}"
+                  <img
+                    src="https://employee-work-mange-5bjm.vercel.app/img/{{ employee.image }}"
                     alt="img" width="80" height="80" class="rounded-1">
                 </div>
                 <div class="ms-auto">
@@ -359,7 +361,7 @@
                     </div>
                     <div class="fs-14 fw-semibold"><a href="tel:+12 345 6789 0"
                         class="text-dark">{{ employee.tel
-                    }}</a></div>
+                        }}</a></div>
                   </div>
                 </li>
 
