@@ -23,6 +23,7 @@ import { LoginService } from './service/login.service';
 import { AdduserComponent } from './adduser/adduser.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     AuthorizationComponent,
     ProfileComponent,
     EmployeesComponent,
-      DashboardComponent,
+    DashboardComponent,
+      LoginComponent
    ],
   imports: [
     BrowserModule,

@@ -12,13 +12,15 @@ import { ProfileComponent } from './profile/profile.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { AdduserComponent } from './adduser/adduser.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { LoginComponent } from './login/login.component';
 
 
 
 const routes: Routes = [
   // Public Routes
 
-  { path: '', component: DashboardComponent }, // Include the email parameter
+  { path: '', component: LoginComponent }, // Include the email parameter
+  { path: 'dashboard', component: DashboardComponent }, // Include the email parameter
 
   { path: 'admin', component: AdminComponent }, // Include the email parameter
   { path: 'approval', component: AuthorizationComponent }, // Include the email parameter
