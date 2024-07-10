@@ -69,18 +69,19 @@ filterDates(data: any[]): any[] {
    try {
          this.spinner.show();
 
-this.matricule=localStorage.getItem('mat')
+     this.matricule = localStorage.getItem('mat')
+         console.log(   this.matricule)
+
       const response = await this.http.get<any[]>('http://127.0.0.1:5000/api/employee/getEmployeeByMatricule/'+this.matricule).toPromise();
     const response1 = await this.http.get<EmployeePoint[]>('http://127.0.0.1:5000/api/employeePoints/' + this.removeLeadingZeros(this.matricule)).toPromise();
     const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(this.matricule)).toPromise();
-    const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' + (this.matricule)).toPromise();
+    const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' +this.removeLeadingZeros (this.matricule)).toPromise();
       this.employee = response;
      this.employeedata = response1 ;
      this.employeedata1 = response2;
      for (let i = 0; i < response2.absences.length; i++) {
   this.setCongeStatus(response2.absences[i]) ;
 }
-   //  console.log(response3)
      this.employeedata2 = this.filterDates(response3);
      this.data=this.calculateTotalAuthorizationTime(this.employeedata2)
 
@@ -246,14 +247,16 @@ console.log(this.processedData)
   congeDetails: any;
 
   async setCongeStatus(date: any) {
-                console.log(date);
 
     this.congeStatus[date] = await this.checkCongeStatus(date);
   }
 
   async checkCongeStatus(date: any): Promise<string> {
     try {
+      console.log(this.employee.matricule)
       const response = await this.getCongesByMatriculeAndDate(this.employee.matricule, date).toPromise();
+            console.log(response)
+
       return response.enConge ? 'DayOff' : 'Unjustified';
     } catch (error) {
       console.error('Error checking conge status:', error);

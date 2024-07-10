@@ -276,8 +276,7 @@ exports.groupPointsByEmployee = async (req, res) => {
   mat="00"+mat
         }
 
- const empdp=employees.find(employee => employee.matricule === mat);
-   
+        const empdp = employees.find(employee => employee.matricule === mat);
         Object.keys(groupedResults[matricule].details).forEach(async (datePart) => {
         
           const points = groupedResults[matricule].details[datePart].points;
@@ -331,8 +330,9 @@ exports.groupPointsByEmployee = async (req, res) => {
               groupedResults[matricule].totalHeuresDimanche += totalMinutes;
             }
 
-         
-            if (empdp.DP == false) {
+            if (empdp) {
+              console.log(empdp);
+               if (empdp.DP == false) {
 
                  
                 const arrivalTime = filteredPoints[0]; // Assuming the first point is the arrival time
@@ -376,6 +376,8 @@ exports.groupPointsByEmployee = async (req, res) => {
                
                
               }
+         }
+        
           }
         });
 
