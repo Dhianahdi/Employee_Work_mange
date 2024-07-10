@@ -19,7 +19,7 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    if (this.username === 'kuffetath' && this.password === 'kufferathadmin') {
+    if (this.username === 'kufferath' && this.password === 'kufferathadmin') {
       // Redirect to the dashboard or home page
       this.router.navigate(['/dashboard']);
     } else {
