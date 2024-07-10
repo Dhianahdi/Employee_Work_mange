@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
@@ -63,7 +64,7 @@ filterDates(data: any[]): any[] {
   });
 }
 
-  
+
  async getEmployees() {
    try {
          this.spinner.show();
@@ -76,6 +77,9 @@ this.matricule=localStorage.getItem('mat')
       this.employee = response;
      this.employeedata = response1 ;
      this.employeedata1 = response2;
+     for (let i = 0; i < response2.absences.length; i++) {
+  this.setCongeStatus(response2.absences[i]) ;
+}
    //  console.log(response3)
      this.employeedata2 = this.filterDates(response3);
      this.data=this.calculateTotalAuthorizationTime(this.employeedata2)
@@ -226,4 +230,36 @@ console.log(this.processedData)
     }
     return 'Not Ok';
   }
+  congeStatus: { [key: string]: string } = {};
+
+
+    getCongesByMatriculeAndDate(matricule: string, date: string): Observable<any> {
+    const params = new HttpParams()
+      .set('matricule', matricule)
+      .set('date', date);
+            console.log(params);
+
+      const response = this.http.get<any>('http://127.0.0.1:5000/api/conge/search/'+matricule+"/"+date);
+      console.log(response);
+    return response;
+    }
+  congeDetails: any;
+
+  async setCongeStatus(date: any) {
+                console.log(date);
+
+    this.congeStatus[date] = await this.checkCongeStatus(date);
+  }
+
+  async checkCongeStatus(date: any): Promise<string> {
+    try {
+      const response = await this.getCongesByMatriculeAndDate(this.employee.matricule, date).toPromise();
+      return response.enConge ? 'DayOff' : 'Unjustified';
+    } catch (error) {
+      console.error('Error checking conge status:', error);
+      return 'Erreur lors de la vérification du congé';
+    }
+  }
+
+
 }

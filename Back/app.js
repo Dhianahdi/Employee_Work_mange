@@ -12,6 +12,7 @@ const fs = require('fs')
 const employeeRoutes = require('./routes/employeeRoutes')
 const employeePointsRoutes = require('./routes/employeePointsRoutes')
 const authorizationRoutes = require('./routes/authorizationRoutes')
+const congeRoutes = require('./routes/congeRoutes')
 const employeeController = require('./controllers/employeeController')
 // Create the server
 const server = http.createServer(app)
@@ -133,6 +134,7 @@ app.use('/file', express.static(path.join(__dirname, 'file')))
 app.use('/api/employee', employeeRoutes)
 app.use('/api/authorization', authorizationRoutes)
 app.use('/api/employeePoints', employeePointsRoutes)
+app.use('/api/conge', congeRoutes)
 
 // Start the server
 server.listen(port, () => {
@@ -148,8 +150,61 @@ const Employee = require('./models/employee'); // Assurez-vous de spécifier le 
 //     console.log('Tous les employés ont été mis à jour avec le nouvel attribut DP.');
 //   } catch (err) {
 //     console.error('Erreur lors de la mise à jour des employés:', err);
-//   } 
+//   }
 // };
-// addDPAttributeToAllEmployees();
+//addDPAttributeToAllEmployees();
+
+
+
+
+// const updateEmployees = async () => {
+//   try {
+ 
+
+//     // Obtenir tous les employés
+//     const employees = await Employee.find({});
+
+//     // Parcourir chaque employé et mettre à jour les champs
+//     for (const employee of employees) {
+//       employee.hiredate = employee.hiredate || '2023-01-01';
+//       employee.status = employee.status || 'Active';
+//       employee.department = employee.department || 'General';
+        
+//       // Assurez-vous que nbrAbsentParMois et ponctualiteParMois sont initialisés en tant que Map
+//       if (!employee.nbrAbsentParMois) {
+//         employee.nbrAbsentParMois = new Map();
+//       }
+//       if (!employee.ponctualiteParMois) {
+//         employee.ponctualiteParMois = new Map();
+//       }   if (!employee.retardParMois) {
+//         employee.retardParMois = new Map();
+//       }
+      
+//       // Ajouter des valeurs pour chaque mois de l'année pour nbrAbsentParMois et ponctualiteParMois
+//       const months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+//       for (const month of months) {
+//         if (!employee.nbrAbsentParMois.has(month)) {
+//           employee.nbrAbsentParMois.set(month, 0);
+//         }
+//         if (!employee.ponctualiteParMois.has(month)) {
+//           employee.ponctualiteParMois.set(month, 0);
+//         }  if (!employee.retardParMois.has(month)) {
+//           employee.retardParMois.set(month, 0);
+//         }
+//       }
+
+//       // Sauvegarder les modifications pour chaque employé
+//       await employee.save();
+//     }
+
+//     console.log('Tous les employés ont été mis à jour avec succès.');
+//   } catch (error) {
+//     console.error('Erreur lors de la mise à jour des employés:', error);
+//   } 
+
+
+
+// };
+//   updateEmployees();
 
 module.exports = app

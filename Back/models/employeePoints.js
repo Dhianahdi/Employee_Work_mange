@@ -19,7 +19,22 @@ const employeePointsSchema = new Schema({
   totalHeuresSupplementaires: String,
   totalHeuresSamedi: String,
   totalHeuresDimanche: String,
-    absences: [String] 
+  absences: [String],
+     nbrAbsentParMois: { 
+    type: Map, 
+    of: Number, 
+    default: {}
+  },
+  ponctualiteParMois: { 
+    type: Map, 
+    of: Number, 
+    default: {}
+  },
+  retardParMois: { 
+    type: Map, 
+    of: Number, 
+    default: {}
+  }
 
 });
 

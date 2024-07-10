@@ -4,6 +4,7 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const path = require('path')
 const EmployeePoints = require('../models/employeePoints');
+const employee = require('../models/employee')
 
 // Créer un employé
 // Fonction pour générer une matricule aléatoire de 3 ou 4 chiffres
@@ -95,6 +96,27 @@ exports.deleteEmployee = async (req, res) => {
   }
 };
 
+
+// Modifier le statut d'un employé par matricule
+exports.toggleEmployeeStatus = async (req, res) => {
+  try {
+    const employee = await Employee.findOne({ matricule: req.params.matricule });
+    if (!employee) {
+      return res.status(404).json({ message: 'Employé non trouvé' });
+    }
+
+    // Inverser le statut de l'employé
+    employee.status = employee.status === 'Active' ? 'noActive' : 'Active';
+    
+    // Sauvegarder les modifications
+    await employee.save();
+
+    res.status(200).json({ message: 'Statut de l\'employé modifié avec succès', newStatus: employee.status });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Obtenir un employé par matricule
 exports.getEmployeeByMatricule = async (req, res) => {
   try {
@@ -106,6 +128,16 @@ exports.getEmployeeByMatricule = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+}
+async function getEmployeeByMatricule1() {
+          
+  const employee = await Employee.find();
+     
+  
+
+      return employee;
+    
+  
 }
 
 const joursFeries = [
@@ -165,9 +197,14 @@ function convertMinutesToHours(minutes) {
 
 exports.groupPointsByEmployee = async (req, res) => {
   const filePath = path.join(__dirname, '../file/test.json');
-  
+  const employees = await getEmployeeByMatricule1(); 
+
+        if (employees === null) {
+          console.error(`Employee not found for matricule: `);
+    } 
   try {
     await EmployeePoints.deleteMany({});
+    
   } catch (err) {
     console.error('Error clearing EmployeePoints collection:', err);
     return res.status(500).json({ error: 'Failed to clear EmployeePoints collection' });
@@ -180,18 +217,23 @@ exports.groupPointsByEmployee = async (req, res) => {
     }
 
     try {
+      let monthYear;
       const jsonData = JSON.parse(data); // Parse JSON data from file
 
       // Object to store grouped results
       const groupedResults = {};
 
       // Loop through JSON data
-      jsonData.forEach((item) => {
+      jsonData.forEach( (item) => {
         const { Matricule, DateHeure } = item;
+      
+       
+        
 
         // Extract the date part of DateHeure
         const datePart = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD');
         const dayName = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('dddd'); // Get the day name
+         monthYear = moment(DateHeure, 'DD/MM/YYYY HH:mm').format('MM-YYYY'); // Get the month and year
 
         // Check if Matricule key exists in groupedResults
         if (!groupedResults[Matricule]) {
@@ -201,7 +243,11 @@ exports.groupPointsByEmployee = async (req, res) => {
             totalHeuresSupplementaires: 0,
             totalHeuresSamedi: 0,
             totalHeuresDimanche: 0,
-            absences: [] // Initialize absences array
+            absences: [], // Initialize absences array
+            nbrAbsentParMois: new Map(),
+            ponctualiteParMois: new Map(),
+             retardParMois: new Map()
+
           };
         }
 
@@ -222,8 +268,18 @@ exports.groupPointsByEmployee = async (req, res) => {
       });
 
       // Remove points with <= 5 minutes difference and calculate working hours
-      Object.keys(groupedResults).forEach((matricule) => {
-        Object.keys(groupedResults[matricule].details).forEach((datePart) => {
+      Object.keys(groupedResults).forEach(async (matricule) => {
+             let mat = matricule+''
+         if (mat.length === 2) {
+  mat="0"+mat
+}     if (mat.length === 1) {
+  mat="00"+mat
+        }
+
+ const empdp=employees.find(employee => employee.matricule === mat);
+   
+        Object.keys(groupedResults[matricule].details).forEach(async (datePart) => {
+        
           const points = groupedResults[matricule].details[datePart].points;
           const filteredPoints = [];
 
@@ -245,6 +301,7 @@ exports.groupPointsByEmployee = async (req, res) => {
             // Calculate working hours
             const heuresTravail = calculateWorkingHours(filteredPoints, filteredPoints.length);
             groupedResults[matricule].details[datePart].heuresTravail = heuresTravail;
+       
 
             const [hours, minutes] = heuresTravail.split(':').map(Number);
             const totalMinutes = hours * 60 + minutes;
@@ -273,6 +330,52 @@ exports.groupPointsByEmployee = async (req, res) => {
             if (dayName === 'Sunday') {
               groupedResults[matricule].totalHeuresDimanche += totalMinutes;
             }
+
+         
+            if (empdp.DP == false) {
+
+                 
+                const arrivalTime = filteredPoints[0]; // Assuming the first point is the arrival time
+                const arrivalMoment = moment(arrivalTime, 'HH:mm');
+                const punctualityTime = moment('08:01', 'HH:mm');
+                const tardinessTime = moment('08:12', 'HH:mm');
+
+                if (arrivalMoment.isBefore(punctualityTime)) {
+                  const ponctualite = groupedResults[matricule].ponctualiteParMois.get(monthYear) || 0;
+                  groupedResults[matricule].ponctualiteParMois.set(monthYear, ponctualite + 1);
+                } else if (arrivalMoment.isAfter(tardinessTime)) {
+                  const retard = groupedResults[matricule].retardParMois.get(monthYear) || 0;
+                  groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
+                }
+            } else if ( empdp.DP == true ) {
+            
+
+                 const arrivalTime = filteredPoints[0]; // Assuming the first point is the arrival time
+                const arrivalMoment = moment(arrivalTime, 'HH:mm');
+                const punctualityTime = moment('07:00', 'HH:mm');
+                const punctualityTime0 = moment('06:00', 'HH:mm');
+                const punctualityTime2 = moment('13:30', 'HH:mm');
+                const tardinessTime = moment('7:12', 'HH:mm');
+                const tardinessTime2 = moment('13:42', 'HH:mm');
+                const punctualityTime02 = moment('12:00', 'HH:mm');
+
+              if (arrivalMoment.isBetween(punctualityTime0, punctualityTime)) {
+              
+                  const ponctualite = groupedResults[matricule].ponctualiteParMois.get(monthYear) || 0;
+                  groupedResults[matricule].ponctualiteParMois.set(monthYear, ponctualite + 1);
+                } else if (arrivalMoment.isBetween(punctualityTime02, punctualityTime2)) {
+                  const ponctualite = groupedResults[matricule].ponctualiteParMois.get(monthYear) || 0;
+                  groupedResults[matricule].ponctualiteParMois.set(monthYear, ponctualite + 1);
+                }else  if (arrivalMoment.isAfter(tardinessTime2)) {
+                  const retard = groupedResults[matricule].retardParMois.get(monthYear) || 0;
+                  groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
+                }else  if (arrivalMoment.isAfter(tardinessTime)) {
+                  const retard = groupedResults[matricule].retardParMois.get(monthYear) || 0;
+                  groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
+                }
+               
+               
+              }
           }
         });
 
@@ -281,25 +384,55 @@ exports.groupPointsByEmployee = async (req, res) => {
         groupedResults[matricule].totalHeuresSupplementaires = convertMinutesToHours(groupedResults[matricule].totalHeuresSupplementaires);
         groupedResults[matricule].totalHeuresSamedi = convertMinutesToHours(groupedResults[matricule].totalHeuresSamedi);
         groupedResults[matricule].totalHeuresDimanche = convertMinutesToHours(groupedResults[matricule].totalHeuresDimanche);
+
         // Detect absences
         const employeeDates = Object.keys(groupedResults[matricule].details);
         const allDates = [];
+
         for (let d = moment(employeeDates[0]); d.isBefore(moment(employeeDates[employeeDates.length - 1]).add(1, 'days')); d.add(1, 'days')) {
           if (d.day() !== 0 && d.day() !== 6 && !joursFeries.includes(d.format('YYYY-MM-DD')) && !employeeDates.includes(d.format('YYYY-MM-DD'))) {
             groupedResults[matricule].absences.push(d.format('YYYY-MM-DD'));
+
+            // Update absences par mois
+            const absenceMonth = d.format('MM-YYYY');
+            const nbrAbsents = groupedResults[matricule].nbrAbsentParMois.get(absenceMonth) || 0;
+            groupedResults[matricule].nbrAbsentParMois.set(absenceMonth, nbrAbsents + 1);
           }
           allDates.push(d.format('YYYY-MM-DD'));
         }
+ 
+        // Convert Maps to plain objects for MongoDB storage
+        groupedResults[matricule].nbrAbsentParMois = Object.fromEntries(groupedResults[matricule].nbrAbsentParMois);
+        groupedResults[matricule].ponctualiteParMois = Object.fromEntries(groupedResults[matricule].ponctualiteParMois);
+
       });
 
       // Save results to the database
-      for (const matricule in groupedResults) {
+      for (let matricule in groupedResults) {
+          
         if (groupedResults.hasOwnProperty(matricule)) {
           const employeeData = groupedResults[matricule];
+        
           await EmployeePoints.updateOne(
             { matricule },
             { $set: employeeData },
             { upsert: true }
+          );
+          // Update employee with calculated values
+          const { nbrAbsentParMois, ponctualiteParMois, retardParMois } = employeeData;
+          const updateData = {
+            nbrAbsentParMois,
+            ponctualiteParMois,
+            retardParMois
+          };
+          if (matricule.length === 2) {
+  matricule="0"+matricule
+}     if (matricule.length === 1) {
+  matricule="00"+matricule
+          }
+          await Employee.updateOne(
+            { matricule },
+            { $set: updateData }
           );
         }
       }

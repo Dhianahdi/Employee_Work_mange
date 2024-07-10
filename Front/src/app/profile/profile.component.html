@@ -168,8 +168,9 @@
                     <div
                       class="indicator bg-secondary me-0 mt-2 flex-shrink-0"></div>
                     <div class="user-message">
-                      <h6 class="message mb-1"><a href="#"
-                          class="text-dark">{{point}}</a></h6>
+                      <h6 class="message mb-1">  <a href="#" [ngClass]="{'text-danger': congeStatus[point] === 'Unjustified', 'text-success': congeStatus[point] === 'DayOff'}">
+    {{ congeStatus[point] }}
+  </a></h6>
                       <p
                         class="message-footer d-flex align-items-center justify-content-between">
                         <span><i class="bi bi-calendar-fill"></i>

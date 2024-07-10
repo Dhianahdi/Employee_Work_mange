@@ -14,6 +14,7 @@ router.get('/getEmployeeByMatricule/:matricule', employeeController.getEmployeeB
 
 // Route pour mettre à jour un employé par ID
 router.put('/:matricule', employeeController.updateEmployee)
+router.get('/toggleEmployeeStatus/:matricule', employeeController.toggleEmployeeStatus)
 
 // Route pour supprimer un employé par ID
 router.delete('/:matricule', employeeController.deleteEmployee)

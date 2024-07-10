@@ -20,6 +20,7 @@ export class EmployeesComponent implements OnInit {
   searchTerm: string = '';
   userForm: FormGroup;
   authForm: FormGroup;
+  congeForm: FormGroup;
   updateForm: FormGroup;
   imageSrc: string | ArrayBuffer | null = null;
   selectedEmployee: any = null;
@@ -38,6 +39,7 @@ export class EmployeesComponent implements OnInit {
     this.userForm = this.fb.group({
       nom: ['', Validators.required],
       matricule: ['', Validators.required],
+      department: ['', Validators.required],
       image: [null],
       DP: [false, Validators.required]
 
@@ -47,12 +49,21 @@ export class EmployeesComponent implements OnInit {
       dateDebut: ['', Validators.required],
       dateFin: ['', Validators.required]
     });
+    this.congeForm = this.fb.group({
+      matricule: [{ value: '' }, Validators.required],
+      dateDebut: ['', Validators.required],
+      dateFin: ['', Validators.required],
+      raison: [{ value: '' }, Validators.required],
+
+    });
 
     this.updateForm = this.fb.group({
       nom: ['', Validators.required],
       tel: ['', Validators.required],
       image: [null],
-            DP: [false, Validators.required]
+      DP: [false, Validators.required],
+                  department: ['', Validators.required],
+
 
     });
   }
@@ -238,12 +249,17 @@ console.log(this.userForm)
       image: employee.image,
       DP: employee.DP,
       tel: employee.tel,
+      department: employee.department,
+
     });
     this.authForm.patchValue({
+      matricule:this.removeLeadingZeros( employee.matricule),
+
+    });
+  this.congeForm.patchValue({
       matricule: employee.matricule,
 
     });
-    console.log(employee.matricule);
 
     this.imageSrc = `http://127.0.0.1:5000/img/${employee.image}`;
   }
@@ -269,7 +285,7 @@ console.log(this.userForm)
 
   async removeEmployee() {
     try {
-      await this.http.delete(`http://127.0.0.1:5000/api/employee/${this.selectedEmployee.matricule}`).toPromise();
+      await this.http.get(`http://127.0.0.1:5000/api/employee/toggleEmployeeStatus/${this.selectedEmployee.matricule}`).toPromise();
       this.toastr.success('Employee removed successfully');
       window.location.reload(); // Rafraîchit la page
     } catch (error) {
@@ -301,6 +317,33 @@ console.log(this.userForm)
         (error) => {
           console.error('Error adding authorization:', error);
           this.toastr.error('Failed to add authorization');
+        }
+      );
+  }
+
+  onSubmit2(): void {
+    if (this.congeForm.invalid) {
+      return;
+    }
+    const dateDebut = new Date(this.congeForm.get('dateDebut')?.value);
+    const dateFin = new Date(this.congeForm.get('dateFin')?.value);
+
+    if (dateDebut >= dateFin) {
+      this.toastr.error('La date de début doit être antérieure à la date de fin.');
+      return;
+    }
+    // Envoyer la requête HTTP pour ajouter l'autorisation
+    this.http.post<any>('http://127.0.0.1:5000/api/conge', this.congeForm.value)
+      .subscribe(
+        (response) => {
+          console.log(response);
+          this.toastr.success('conge added successfully');
+          this.userForm.reset(); // Réinitialiser le formulaire après succès
+
+        },
+        (error) => {
+          console.error('Error adding conge:', error);
+          this.toastr.error('Failed to add conge');
         }
       );
   }

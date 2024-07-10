@@ -1,0 +1,109 @@
+<div class="container-fluid">
+  <div class="inner-contents">
+    <div
+      class="page-header d-flex align-items-center justify-content-between mb-4">
+      <div class="left-part">
+        <h2 class="text-dark">Dashboard</h2>
+      </div>
+      <div class="right-part"></div>
+    </div>
+
+     <!-- Filters -->
+    <div class="filters mb-4">
+      <div class="form-row">
+        <div class="col">
+          <label for="filterType" class="sr-only">Filter by</label>
+          <select id="filterType" class="form-control" [(ngModel)]="filterType" (change)="onFilterTypeChange()">
+            <option value="month">Month</option>
+            <option value="year">Year</option>
+          </select>
+        </div>
+
+        <div class="col" *ngIf="filterType === 'month'">
+          <label for="selectedMonth" class="sr-only">Select Month</label>
+          <select id="selectedMonth" class="form-control" [(ngModel)]="selectedMonth" (change)="onFilterChange()">
+            <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+          </select>
+        </div>
+
+        <div class="col" *ngIf="filterType === 'year'">
+          <label for="selectedYear" class="sr-only">Select Year</label>
+          <select id="selectedYear" class="form-control" [(ngModel)]="selectedYear" (change)="onFilterChange()">
+            <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+          </select>
+        </div>
+
+        <div class="col">
+          <label for="selectedDepartment" class="sr-only">Select Department</label>
+          <select id="selectedDepartment" class="form-control" [(ngModel)]="selectedDepartment" (change)="onFilterChange()">
+            <option value="">All Departments</option>
+            <option *ngFor="let department of departments" [value]="department">{{ department }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container d-flex justify-content-around mb-4">
+      <div class="chart">
+        <h3 class="chart-title">Top Absences</h3>
+        <ngx-charts-bar-vertical
+          [results]="topAbsences"
+          [view]="view"
+          [scheme]="colorScheme"
+          [gradient]="gradient"
+          [xAxis]="showXAxis"
+          [yAxis]="showYAxis"
+          [legend]="showLegend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          (select)="onSelect($event)">
+        </ngx-charts-bar-vertical>
+      </div>
+      <div class="chart">
+        <h3 class="chart-title">Top Tardiness</h3>
+        <ngx-charts-bar-vertical
+          [results]="topTardiness"
+          [view]="view"
+          [scheme]="colorScheme"
+          [gradient]="gradient"
+          [xAxis]="showXAxis"
+          [yAxis]="showYAxis"
+          [legend]="showLegend"
+          [showXAxisLabel]="showXAxisLabel"
+          [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel"
+          [yAxisLabel]="yAxisLabel"
+          (select)="onSelect($event)">
+        </ngx-charts-bar-vertical>
+      </div>
+    </div>
+
+    <!-- Punctuality Details Table -->
+    <div class="table-container">
+      <h3 class="table-title">Punctuality Details for Current Year</h3>
+      <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+          <tr>
+                        <th scope="col">Matricule</th>
+
+            <th scope="col">Employee</th>
+            <th scope="col">Punctuality Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of punctualityDetails">
+            <td>{{ employee.matricule }}</td>
+
+            <td><img src="http://127.0.0.1:5000/img/{{employee.photo}}"
+                alt="{{ employee.name }}" class="img-thumbnail"
+                style="width: 50px; height: 50px;"> {{ employee.name }}</td>
+            <td>{{ employee.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

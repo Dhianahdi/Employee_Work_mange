@@ -24,3 +24,11 @@
 .text-ok {
   color: rgb(26, 255, 0);
 }
+
+.text-danger {
+  color: red;
+}
+
+.text-success {
+  color: green;
+}

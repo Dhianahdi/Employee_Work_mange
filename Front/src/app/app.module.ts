@@ -3,6 +3,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxApexchartsModule } from 'ngx-apexcharts';
 import { CountUpModule } from 'ngx-countup';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,6 +22,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { LoginService } from './service/login.service';
 import { AdduserComponent } from './adduser/adduser.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     AuthorizationComponent,
     ProfileComponent,
     EmployeesComponent,
-      AdduserComponent
+      DashboardComponent,
    ],
   imports: [
     BrowserModule,
@@ -52,6 +54,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     }),
     CountUpModule,
     NgxSpinnerModule,
+    NgxDatatableModule,
 
   ],
   providers: [
