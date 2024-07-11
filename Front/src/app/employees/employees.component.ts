@@ -40,6 +40,7 @@ export class EmployeesComponent implements OnInit {
       nom: ['', Validators.required],
       matricule: ['', Validators.required],
       department: ['', Validators.required],
+      tel: ['', Validators.required],
       image: [null],
       DP: [false, Validators.required]
 
@@ -58,6 +59,8 @@ export class EmployeesComponent implements OnInit {
     });
 
     this.updateForm = this.fb.group({
+            matricule: [{ value: '' }, Validators.required],
+
       nom: ['', Validators.required],
       tel: ['', Validators.required],
       image: [null],
