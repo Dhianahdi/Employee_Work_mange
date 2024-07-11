@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,6 +14,7 @@ export class DashboardComponent implements OnInit {
   departments: string[] = [];
   topAbsences: any[] = [];
   topTardiness: any[] = [];
+  topPunctualEmployees: any[] = [];
   punctualityDetails: any[] = [];
   employees: any[] = [];
   view: [number, number] = [700, 400];
@@ -34,7 +36,6 @@ export class DashboardComponent implements OnInit {
     { prop: 'name' },
     { prop: 'value' }
   ];
-
   filterType: string = 'month';
   selectedMonth: string = moment().format('MM-YYYY');
   selectedYear: number = moment().year();
@@ -55,7 +56,8 @@ export class DashboardComponent implements OnInit {
   years = Array.from({ length: 5 }, (_, i) => moment().year() - i);
   selectedDepartment: string = '';
 
-  constructor(private http: HttpClient, private spinner: NgxSpinnerService) {}
+  constructor(private http: HttpClient, private spinner: NgxSpinnerService,    private router: Router,
+) {}
 
   ngOnInit(): void {
     this.getEmployees();
@@ -85,7 +87,7 @@ export class DashboardComponent implements OnInit {
 
   processEmployeeData() {
     const currentMonth = this.selectedMonth;
-    const currentYear =    moment(this.selectedYear, 'YYYY').year()  ;
+    const currentYear = moment(this.selectedYear, 'YYYY').year();
     let filteredEmployees = [];
     for (let employee of this.employees) {
       if (this.selectedDepartment === '' || employee.department === this.selectedDepartment) {
@@ -99,34 +101,50 @@ export class DashboardComponent implements OnInit {
           .filter(date => moment(date, 'MM-YYYY').year() === currentYear)
           .reduce((sum, date) => sum + employee.nbrAbsentParMois[date], 0)
         : employee.nbrAbsentParMois[currentMonth] || 0;
-    return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
+      return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
     }).sort((a, b) => b.value - a.value).slice(0, 10);
 
     const tardinessData = filteredEmployees.map(employee => {
       const count = this.filterType === 'year'
         ? Object.keys(employee.retardParMois)
-          .filter(date =>
-            moment(date, 'MM-YYYY').year() === currentYear
-           )
+          .filter(date => moment(date, 'MM-YYYY').year() === currentYear)
           .reduce((sum, date) => sum + employee.retardParMois[date], 0)
         : employee.retardParMois[currentMonth] || 0;
-    return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
+      return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
     }).sort((a, b) => b.value - a.value).slice(0, 10);
 
-    this.topAbsences = absenceData;
-    this.topTardiness = tardinessData;
-
-    this.punctualityDetails = filteredEmployees.map(employee => {
+    const punctualityData = filteredEmployees.map(employee => {
       const count = this.filterType === 'year'
         ? Object.keys(employee.ponctualiteParMois)
           .filter(date => moment(date, 'MM-YYYY').year() === currentYear)
           .reduce((sum, date) => sum + employee.ponctualiteParMois[date], 0)
         : employee.ponctualiteParMois[currentMonth] || 0;
-    return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
+
+      return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule };
+    }).sort((a, b) => b.value - a.value).slice(0, 10);
+
+    const punctualityData1 = filteredEmployees.map(employee => {
+      const count = this.filterType === 'year'
+        ? Object.keys(employee.ponctualiteParMois)
+          .filter(date => moment(date, 'MM-YYYY').year() === currentYear)
+          .reduce((sum, date) => sum + employee.ponctualiteParMois[date], 0)
+        : employee.ponctualiteParMois[currentMonth] || 0;
+
+      return { name: employee.nom, value: count, photo: employee.image, matricule: employee.matricule, DP: employee.DP };
     }).sort((a, b) => b.value - a.value);
+
+    this.topAbsences = absenceData;
+    this.topTardiness = tardinessData;
+    this.topPunctualEmployees = punctualityData;
+    this.punctualityDetails = punctualityData1;
   }
 
   onSelect(event: any): void {
     console.log(event);
+  }
+  navigateprofile(mat: string, DP: string) {
+    localStorage.setItem('mat', mat);
+    localStorage.setItem('dp', DP);
+    this.router.navigate(['/profile']);
   }
 }

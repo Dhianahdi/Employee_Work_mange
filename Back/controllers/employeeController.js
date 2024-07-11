@@ -331,7 +331,6 @@ exports.groupPointsByEmployee = async (req, res) => {
             }
 
             if (empdp) {
-              console.log(empdp);
                if (empdp.DP == false) {
 
                  
@@ -348,11 +347,14 @@ exports.groupPointsByEmployee = async (req, res) => {
                   groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
                 }
             } else if ( empdp.DP == true ) {
-            
+              //    if (matricule === "7") {
+                
+              // }
 
                  const arrivalTime = filteredPoints[0]; // Assuming the first point is the arrival time
                 const arrivalMoment = moment(arrivalTime, 'HH:mm');
                 const punctualityTime = moment('07:00', 'HH:mm');
+                const punctualityTimeR2 = moment('10:00', 'HH:mm');
                 const punctualityTime0 = moment('06:00', 'HH:mm');
                 const punctualityTime2 = moment('13:30', 'HH:mm');
                 const tardinessTime = moment('7:12', 'HH:mm');
@@ -369,7 +371,7 @@ exports.groupPointsByEmployee = async (req, res) => {
                 }else  if (arrivalMoment.isAfter(tardinessTime2)) {
                   const retard = groupedResults[matricule].retardParMois.get(monthYear) || 0;
                   groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
-                }else  if (arrivalMoment.isAfter(tardinessTime)) {
+                }else  if (arrivalMoment.isBetween(tardinessTime, punctualityTimeR2)) {
                   const retard = groupedResults[matricule].retardParMois.get(monthYear) || 0;
                   groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
                 }

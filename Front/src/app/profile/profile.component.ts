@@ -214,13 +214,13 @@ console.log(this.processedData)
         return 'Ok';
 
         }
-      } else {
-          if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
+      } else if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
+
         if (lastPoint.isAfter(moment('20:25', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
 
         }
-      }
+
       }
       const hasAuthorization = this.employeedata2.some((authorization: any) =>
         moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
