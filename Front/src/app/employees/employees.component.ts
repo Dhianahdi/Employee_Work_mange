@@ -75,7 +75,7 @@ export class EmployeesComponent implements OnInit {
     try {
                this.spinner.show();
 
-      const response = await this.http.get<any[]>('https://employee-work-mange-5bjm.vercel.app/api/employee/employees').toPromise();
+      const response = await this.http.get<any[]>('http://127.0.0.1:5000/api/employee/employees').toPromise();
       this.employees = response;
       this.employees1 = response;
       this.filteredEmployees = [...this.employees];
@@ -138,9 +138,11 @@ export class EmployeesComponent implements OnInit {
 
       const formData = new FormData();
       formData.append('file', file);
-
-      this.http.post<any>('https://employee-work-mange-5bjm.vercel.app/api/upload', formData).subscribe(
+console.log(formData)
+      this.http.post<any>('http://127.0.0.1:5000/api/upload', formData).subscribe(
         (response) => {
+          console.log(response)
+
           this.userForm.patchValue({
             image: response.filename
           });
@@ -235,7 +237,7 @@ this.getEmployeesdata()
     formData.append('image', this.userForm.get('image')?.value);
 console.log(this.userForm)
     try {
-      const response = await this.http.post('https://employee-work-mange-5bjm.vercel.app/api/employee', this.userForm.value).toPromise();
+      const response = await this.http.post('http://127.0.0.1:5000/api/employee', this.userForm.value).toPromise();
       this.toastr.success('Employee created successfully');
       window.location.reload(); // Rafraîchit la page
     } catch (error) {
@@ -264,7 +266,7 @@ console.log(this.userForm)
 
     });
 
-    this.imageSrc = `https://employee-work-mange-5bjm.vercel.app/img/${employee.image}`;
+    this.imageSrc = `http://127.0.0.1:5000/img/${employee.image}`;
   }
 
   async onUpdate() {
@@ -277,7 +279,7 @@ console.log(this.userForm)
     formData.append('image', this.updateForm.get('image')?.value);
 
     try {
-      const response = await this.http.put(`https://employee-work-mange-5bjm.vercel.app/api/employee/${this.selectedEmployee.matricule}`, this.updateForm.value).toPromise();
+      const response = await this.http.put(`http://127.0.0.1:5000/api/employee/${this.selectedEmployee.matricule}`, this.updateForm.value).toPromise();
       this.toastr.success('Employee updated successfully');
       window.location.reload(); // Rafraîchit la page
     } catch (error) {
@@ -288,7 +290,7 @@ console.log(this.userForm)
 
   async removeEmployee() {
     try {
-      await this.http.get(`https://employee-work-mange-5bjm.vercel.app/api/employee/toggleEmployeeStatus/${this.selectedEmployee.matricule}`).toPromise();
+      await this.http.get(`http://127.0.0.1:5000/api/employee/toggleEmployeeStatus/${this.selectedEmployee.matricule}`).toPromise();
       this.toastr.success('Employee removed successfully');
       window.location.reload(); // Rafraîchit la page
     } catch (error) {
@@ -309,7 +311,7 @@ console.log(this.userForm)
       return;
     }
     // Envoyer la requête HTTP pour ajouter l'autorisation
-    this.http.post<any>('https://employee-work-mange-5bjm.vercel.app/api/authorization', this.authForm.value)
+    this.http.post<any>('http://127.0.0.1:5000/api/authorization', this.authForm.value)
       .subscribe(
         (response) => {
           console.log(response);
@@ -336,7 +338,7 @@ console.log(this.userForm)
       return;
     }
     // Envoyer la requête HTTP pour ajouter l'autorisation
-    this.http.post<any>('https://employee-work-mange-5bjm.vercel.app/api/conge', this.congeForm.value)
+    this.http.post<any>('http://127.0.0.1:5000/api/conge', this.congeForm.value)
       .subscribe(
         (response) => {
           console.log(response);
@@ -422,8 +424,8 @@ async exportToExcel(): Promise<void> {
   for (const employee of this.employees) {
     localStorage.setItem("dp",employee.DP)
     try {
-       const response2 = await this.http.get<any>('https://employee-work-mange-5bjm.vercel.app/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(employee.matricule)).toPromise();
-       const response3 = await this.http.get<any>('https://employee-work-mange-5bjm.vercel.app/api/authorization/' + employee.matricule).toPromise();
+       const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(employee.matricule)).toPromise();
+       const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' + employee.matricule).toPromise();
 this.employeedata2=response3
       const absences = response2.absences;
       const pointes = response2.employeeDetails;

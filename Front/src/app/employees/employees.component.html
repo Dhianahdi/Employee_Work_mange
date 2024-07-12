@@ -117,7 +117,7 @@
                     <div class="row">
                       <div class="col-lg-6">
                         <div class="form-group">
-                             <label
+                          <label
                             class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Full
                             Matricule</label>
                           <input type="number" class="form-control"
@@ -157,7 +157,9 @@
                         class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Profile
                         Picture</label>
                       <div>
-                        <img [src]="imageSrc|| 'assets/img/2.jpg'" alt="img"
+                        <img
+                          [src]="imageSrc|| 'http://127.0.0.1:5000/img/user.png'"
+                          alt="img"
                           class="rounded-1 w-100"
                           style="max-height: 300px;">
                       </div>
@@ -206,7 +208,7 @@
                             Name</label>
                           <input type="text" class="form-control"
                             formControlName="nom" placeholder="Full Name">
-                             <label
+                          <label
                             class="form-label fs-16 fw-bold text-uppercase ls-1 text-gray-300">Phone</label>
                           <input type="text" class="form-control"
                             formControlName="tel" placeholder="Full Name">
@@ -417,7 +419,7 @@
               <div class="avatar-img m-auto position-relative"
                 style="width: 105px; height: 105px;">
                 <img
-                  src="https://employee-work-mange-5bjm.vercel.app/img/{{ employee.image }}"
+                  src="http://127.0.0.1:5000/img/{{ employee.image }}"
                   alt="img" class="rounded-2 w-100">
                 <img *ngIf="employee.status === 'Active'"
                   src="assets/img/clients/1.jpg" alt="img" width="42"
@@ -438,7 +440,13 @@
                 <a href="/profile" class="fs-14 fw-semibold"> {{
                   employee.matricule
                   }}</a>
+
               </div>
+              <small
+                class="d-inline-block text-gray fs-14 fw-normal">{{
+                employee.department
+                }}
+              </small>
             </div>
 
           </div>

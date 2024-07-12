@@ -66,7 +66,7 @@ export class DashboardComponent implements OnInit {
   async getEmployees() {
     try {
       this.spinner.show();
-      const response = await this.http.get<any[]>('https://employee-work-mange-5bjm.vercel.app/api/employee/employees').toPromise();
+      const response = await this.http.get<any[]>('http://127.0.0.1:5000/api/employee/employees').toPromise();
       this.employees = response || [];
       this.departments = Array.from(new Set(this.employees.map(employee => employee.department)));
       this.processEmployeeData();

@@ -72,10 +72,10 @@ filterDates(data: any[]): any[] {
      this.matricule = localStorage.getItem('mat')
          console.log(   this.matricule)
 
-      const response = await this.http.get<any[]>('https://employee-work-mange-5bjm.vercel.app/api/employee/getEmployeeByMatricule/'+this.matricule).toPromise();
-    const response1 = await this.http.get<EmployeePoint[]>('https://employee-work-mange-5bjm.vercel.app/api/employeePoints/' + this.removeLeadingZeros(this.matricule)).toPromise();
-    const response2 = await this.http.get<any>('https://employee-work-mange-5bjm.vercel.app/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(this.matricule)).toPromise();
-    const response3 = await this.http.get<any>('https://employee-work-mange-5bjm.vercel.app/api/authorization/' +this.removeLeadingZeros (this.matricule)).toPromise();
+      const response = await this.http.get<any[]>('http://127.0.0.1:5000/api/employee/getEmployeeByMatricule/'+this.matricule).toPromise();
+    const response1 = await this.http.get<EmployeePoint[]>('http://127.0.0.1:5000/api/employeePoints/' + this.removeLeadingZeros(this.matricule)).toPromise();
+    const response2 = await this.http.get<any>('http://127.0.0.1:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(this.matricule)).toPromise();
+    const response3 = await this.http.get<any>('http://127.0.0.1:5000/api/authorization/' +this.removeLeadingZeros (this.matricule)).toPromise();
       this.employee = response;
      this.employeedata = response1 ;
      this.employeedata1 = response2;
@@ -190,14 +190,18 @@ console.log(this.processedData)
 
 
   getStatus(point: any): string {
-         const dp=localStorage.getItem("dp")
+    const dp = localStorage.getItem("dp")
+
+    const WH=moment(point.heuresNormales, 'HH:mm')
     const firstPoint = moment(point.points[0], ' HH:mm');
     const lastPoint = moment(point.points[point.points.length - 1], 'HH:mm');
     const datePart = moment(point.date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+ 
 
     if (dp === "false") {
+  
 
-      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))&&point.points.length<=4) {
+      if (firstPoint.isBefore(moment('08:19', 'HH:mm')) && lastPoint.isAfter(moment('16:45', 'HH:mm'))&& WH.isAfter(moment('7:45', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
       }
       const hasAuthorization = this.employeedata2.some((authorization: any) =>
@@ -209,12 +213,12 @@ console.log(this.processedData)
     }
     if (dp === "true") {
 
-      if (firstPoint.isBefore(moment('07:14', 'HH:mm'))) {
+      if (firstPoint.isBefore(moment('07:14', 'HH:mm'))&& WH.isAfter(moment('6:45', 'HH:mm'))) {
         if (lastPoint.isAfter(moment('13:55', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
 
         }
-      } else if (firstPoint.isBefore(moment('13:42', 'HH:mm'))) {
+      } else if (firstPoint.isBefore(moment('13:42', 'HH:mm'))&&WH.isAfter(moment('6:45', 'HH:mm'))) {
 
         if (lastPoint.isAfter(moment('20:25', 'HH:mm'))&&point.points.length<=4) {
         return 'Ok';
@@ -225,6 +229,7 @@ console.log(this.processedData)
       const hasAuthorization = this.employeedata2.some((authorization: any) =>
         moment( authorization.dateDebut , 'YYYY-MM-DD').format('YYYY-MM-DD') === datePart
       );
+      console.log()
       if (hasAuthorization) {
         return 'With Authorization';
       }
@@ -240,7 +245,7 @@ console.log(this.processedData)
       .set('date', date);
             console.log(params);
 
-      const response = this.http.get<any>('https://employee-work-mange-5bjm.vercel.app/api/conge/search/'+matricule+"/"+date);
+      const response = this.http.get<any>('http://127.0.0.1:5000/api/conge/search/'+matricule+"/"+date);
       console.log(response);
     return response;
     }

@@ -21,29 +21,25 @@ exports.getEmployeePointsDetails = async (req, res) => {
   const matricule = req.params.matricule; // Supposant que vous récupérez le matricule à partir des paramètres de requête
 
   try {
-    // Recherchez les points de l'employé par matricule
     const employeePoints = await EmployeePoints.findOne({ matricule });
 
     if (!employeePoints) {
       return res.status(404).json({ message: "Points de l'employé non trouvés" });
     }
 
-    // Structure de données pour stocker les détails des points et des absences
     const employeeDetails = [];
 
-    // Parcours des détails des points pour chaque jour
     employeePoints.details.forEach((value, key) => {
       const jour = value.jour;
+      const heuresNormales = value.heuresNormales;
       const points = value.points;
-      const date = key; // Supposant que la clé est la date
+      const date = key; 
 
-      employeeDetails.push({ jour, date, points });
+      employeeDetails.push({ jour, date, points,heuresNormales });
     });
 
-    // Récupération des absences
     const absences = employeePoints.absences || [];
 
-    // Retourner la réponse avec les détails des points et des absences
     res.status(200).json({ employeeDetails, absences });
   } catch (error) {
     console.error('Erreur lors de la récupération des points de l\'employé:', error);
