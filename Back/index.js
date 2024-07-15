@@ -7,6 +7,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require('path')
 const fs = require('fs')
+const sql = require("mssql");
 
 // Import your routes
 const employeeRoutes = require('./routes/employeeRoutes')
@@ -16,6 +17,37 @@ const congeRoutes = require('./routes/congeRoutes')
 const employeeController = require('./controllers/employeeController')
 // Create the server
 const server = http.createServer(app)
+
+// SQL Server configuration
+var config = {
+    user: "sa", // Database username
+    password: "1920", // Database password
+    server: "LAPTOP-P1H9QAET", // Server name and instance (if any)
+    database: "usinage", // Database name
+  options: {
+            trustServerCertificate: true, // Autoriser le certificat non approuvé (pour développement seulement)
+
+        trustedConnection: true,
+        encrypt: false, // Disable encryption
+        enableArithAbort: true // Enable arithabort to avoid certain types of errors
+    },
+    port: 1433 // Ensure this is the correct port
+};
+
+
+// Connect to SQL Server
+sql.connect(config, err => {
+    if (err) {
+        throw err;
+    }
+    console.log("Connection Successful!");
+});
+
+
+
+
+
+
 
 // Connect to MongoDB
 mongoose

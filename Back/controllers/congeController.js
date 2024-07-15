@@ -77,3 +77,23 @@ exports.getCongesByMatriculeAndDate = async (req, res) => {
   }
 };
 
+
+
+exports.getNombreConges = async(matricule, monthYear) =>{
+  try {
+    // Convertir monthYear en une date de début et de fin pour le mois
+    const [month, year] = monthYear.split('-');
+    const startOfMonth = new Date(year, month - 1, 1); // Mois est 0-indexé dans JavaScript
+    const endOfMonth = new Date(year, month, 0); // Dernier jour du mois
+    // Requête pour compter les congés pour cet employé dans le mois donné
+    const count = await Conge.countDocuments({
+      matricule: matricule,
+      dateDebut: { $gte: startOfMonth },
+    });
+
+    return count;
+  } catch (error) {
+    console.error('Error fetching congés:', error);
+    throw error;
+  }
+}

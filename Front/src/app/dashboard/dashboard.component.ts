@@ -85,12 +85,14 @@ export class DashboardComponent implements OnInit {
     this.processEmployeeData();
   }
 
+
   processEmployeeData() {
     const currentMonth = this.selectedMonth;
     const currentYear = moment(this.selectedYear, 'YYYY').year();
     let filteredEmployees = [];
     for (let employee of this.employees) {
       if (this.selectedDepartment === '' || employee.department === this.selectedDepartment) {
+
         filteredEmployees.push(employee);
       }
     }

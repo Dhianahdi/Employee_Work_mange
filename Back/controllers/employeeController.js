@@ -4,7 +4,7 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const path = require('path')
 const EmployeePoints = require('../models/employeePoints');
-const employee = require('../models/employee')
+const congeController = require('../controllers/congeController')
 
 // Créer un employé
 // Fonction pour générer une matricule aléatoire de 3 ou 4 chiffres
@@ -347,9 +347,7 @@ exports.groupPointsByEmployee = async (req, res) => {
                   groupedResults[matricule].retardParMois.set(monthYear, retard + 1);
                 }
             } else if ( empdp.DP == true ) {
-              //    if (matricule === "7") {
-                
-              // }
+             
 
                  const arrivalTime = filteredPoints[0]; // Assuming the first point is the arrival time
                 const arrivalMoment = moment(arrivalTime, 'HH:mm');
@@ -399,6 +397,9 @@ exports.groupPointsByEmployee = async (req, res) => {
 
             // Update absences par mois
             const absenceMonth = d.format('MM-YYYY');
+                
+
+            
             const nbrAbsents = groupedResults[matricule].nbrAbsentParMois.get(absenceMonth) || 0;
             groupedResults[matricule].nbrAbsentParMois.set(absenceMonth, nbrAbsents + 1);
           }
@@ -413,10 +414,28 @@ exports.groupPointsByEmployee = async (req, res) => {
 
       // Save results to the database
       for (let matricule in groupedResults) {
-          
+          let matr=matricule
         if (groupedResults.hasOwnProperty(matricule)) {
           const employeeData = groupedResults[matricule];
+          for (let date in employeeData.nbrAbsentParMois) { 
+            if (date) {
+      if (matricule.length === 2) {
+ matr ="0"+matricule
+}     if (matricule.length === 1) {
+    matr="00"+matricule
+          }
+const nbrabs = await congeController.getNombreConges(matr, date)
+              console.log(nbrabs);
+              console.log(matr);
+              employeeData.nbrAbsentParMois[date]-=nbrabs
+              
+    
+}
+
         
+          }
+
+
           await EmployeePoints.updateOne(
             { matricule },
             { $set: employeeData },
