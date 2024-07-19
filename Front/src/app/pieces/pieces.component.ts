@@ -146,7 +146,7 @@ machineCounttable:any
     const endDate = moment(this.selectedDay).endOf('day').format('YYYY-MM-DD');
     try {
       this.spinner.show();
-      const response = await this.http.post<any>('http://192.168.3.2:5000/api/fiche_conformitestats', { startDate, endDate }).toPromise();
+      const response = await this.http.post<any>('https://192.168.3.2:5000/api/fiche_conformitestats', { startDate, endDate }).toPromise();
       this.quantiteParNom = this.transformData(response.quantiteParNom);
       this.countParEtatPiece = response.countParEtatPiece;
       this.countParStatut = response.countParStatut;
@@ -212,7 +212,7 @@ machineCounttable:any
   async filterDataByDate(): Promise<any> {
     try {
       this.spinner.show();
-      const response = await this.http.post<any>('http://192.168.3.2:5000/api/fiche_conformitestats', this.filteredData).toPromise();
+      const response = await this.http.post<any>('https://192.168.3.2:5000/api/fiche_conformitestats', this.filteredData).toPromise();
       console.log(response);
 
       this.quantiteParNom = this.transformData(response.quantiteParNom);
