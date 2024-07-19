@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit } from '@angular/core';
 import { Color, LegendPosition, ScaleType } from '@swimlane/ngx-charts';
 import { NgxSpinnerService } from 'ngx-spinner';
 import * as moment from 'moment';
 
 @Component({
   selector: 'app-pieces',
+
   templateUrl: './pieces.component.html',
-  styleUrls: ['./pieces.component.css']
+  styleUrls: ['./pieces.component.css'],
+
 })
 export class PiecesComponent implements OnInit {
   filterType: string = 'day';
@@ -33,6 +35,7 @@ export class PiecesComponent implements OnInit {
   columnsToDisplay = ['Machine', ...this.months.map(month => month.name)];
 filteredData:any
 machineCount:any
+machineCounttable:any
   quantiteParNom: any;
   countParEtatPiece: any;
   countParStatut: any;
@@ -51,7 +54,7 @@ machineCount:any
     name: 'vivid',
     selectable: true,
     group: ScaleType.Ordinal,
-    domain: ['#9147FA', '#F667EA', '#4ACCFB', '#E83838']
+    domain: ['#9147FA', '#F667EA', '#4ACCFB', '#E83838', '#6CBA13', '#FFCC00', '#162DF5', '#38E85E']
   };
   colorScheme2: Color = {
     name: 'vivid',
@@ -60,7 +63,77 @@ machineCount:any
     domain: ['#9147FA', '#4ACCFB', '#4ACCFB', '#E83838']
   };
   legendPosition: LegendPosition = LegendPosition.Right;
-  schemeType: string = 'ordinal'; // 'ordinal' or 'linear'
+
+
+
+
+
+
+
+
+
+
+
+
+
+  view1: any[] = [700, 370];
+
+  // options
+  legendTitle: string = 'Products';
+  legendTitleMulti: string = 'Months';
+  legendPosition1: string = 'below'; // ['right', 'below']
+  legend: boolean = true;
+
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+
+  yAxisLabel1: string = 'Sales';
+  xAxisLabel1: string = 'Products';
+  showXAxisLabel1: boolean = true;
+  showYAxisLabel1: boolean = true;
+
+  maxXAxisTickLength: number = 30;
+  maxYAxisTickLength: number = 30;
+  trimXAxisTicks: boolean = false;
+  trimYAxisTicks: boolean = false;
+  rotateXAxisTicks: boolean = false;
+
+  xAxisTicks: any[] = ['Genre 1', 'Genre 2', 'Genre 3', 'Genre 4', 'Genre 5', 'Genre 6', 'Genre 7']
+  yAxisTicks: any[] = [100, 1000, 2000, 5000, 7000, 10000]
+
+  animations: boolean = true; // animations on load
+
+  showGridLines: boolean = true; // grid lines
+
+  showDataLabel: boolean = true; // numbers on bars
+
+
+
+  schemeType: any = 'ordinal'; // 'ordinal' or 'linear'
+
+  activeEntries: any[] = ['book']
+  barPadding: number = 5
+  tooltipDisabled: boolean = false;
+
+  yScaleMax: number = 9000;
+
+  roundEdges: boolean = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   constructor(private http: HttpClient, private spinner: NgxSpinnerService) { }
 
@@ -73,7 +146,7 @@ machineCount:any
     const endDate = moment(this.selectedDay).endOf('day').format('YYYY-MM-DD');
     try {
       this.spinner.show();
-      const response = await this.http.post<any>('http://localhost:5000/api/fiche_conformitestats', { startDate, endDate }).toPromise();
+      const response = await this.http.post<any>('http://192.168.3.2:5000/api/fiche_conformitestats', { startDate, endDate }).toPromise();
       this.quantiteParNom = this.transformData(response.quantiteParNom);
       this.countParEtatPiece = response.countParEtatPiece;
       this.countParStatut = response.countParStatut;
@@ -81,7 +154,8 @@ machineCount:any
 
 
       this.transformedNonConformeTableData = this.transformNonConformeTableData(response.nonConformePerMonth);
-      this.machineCount = this.transformNonConformeTableData(response.machineCount);
+      this.machineCounttable = this.transformNonConformeTableData(response.machineCount);
+      this.machineCount = this.transformNonConformeData(response.machineCount);
 
 
       this.countParEtatPiece = [
@@ -138,15 +212,13 @@ machineCount:any
   async filterDataByDate(): Promise<any> {
     try {
       this.spinner.show();
-      const response = await this.http.post<any>('http://localhost:5000/api/fiche_conformitestats', this.filteredData).toPromise();
+      const response = await this.http.post<any>('http://192.168.3.2:5000/api/fiche_conformitestats', this.filteredData).toPromise();
       console.log(response);
 
       this.quantiteParNom = this.transformData(response.quantiteParNom);
       this.countParEtatPiece = response.countParEtatPiece;
       this.countParStatut = response.countParStatut;
-      this.nonConformePerMonth = this.transformNonConformeData(response.nonConformePerMonth);
-      this.transformedNonConformeTableData = this.transformNonConformeTableData(response.nonConformePerMonth);
-      this.machineCount = this.transformNonConformeTableData(response.machineCount);
+
 
       console.log(this.machineCount);
       this.countParEtatPiece = [

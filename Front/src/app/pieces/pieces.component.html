@@ -1,10 +1,12 @@
 <app-header></app-header>
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
 <div class="container-fluid">
   <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff"
     type="line-scale-party" [fullScreen]="true"></ngx-spinner>
 
   <div class="inner-contents">
+
     <div class="filters mb-4">
       <div class="form-row">
         <div class="col">
@@ -42,7 +44,91 @@
         </div>
       </div>
     </div>
+    <swiper-container  class="mySwiper" autoplay="true" [autoplay]="{ delay: 10000 }" loop="true" navigation="true" pagination="true">
+      <swiper-slide>
+        <div class="chart">
+          <h3 class="chart-title">Quantity per Name</h3>
+          <ngx-charts-bar-vertical
+            [results]="quantiteParNom"
+            [view]="view"
+            [scheme]="colorScheme"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel">
+          </ngx-charts-bar-vertical>
+        </div> </swiper-slide>
+      <swiper-slide>
+        <div class="chart-container">
 
+          <h3 class="chart-title">Non-Conformity per Machine</h3>
+
+          <ngx-charts-bar-vertical-2d [results]="nonConformePerMonth"
+            [view]="view"
+            [scheme]="colorScheme" [schemeType]="schemeType"
+            [gradient]="gradient"
+            [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend"
+            [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"
+            [legendTitle]="legendTitleMulti" [legendPosition]="legendPosition"
+            [animations]="animations" [showGridLines]="showGridLines"
+            [barPadding]="barPadding"
+            [tooltipDisabled]="tooltipDisabled"></ngx-charts-bar-vertical-2d>
+        </div> </swiper-slide>
+           <swiper-slide>
+        <div class="chart-container">
+        <h3 class="chart-title">Scrap pieces per Machine</h3>
+
+        <ngx-charts-bar-vertical-2d [results]="machineCount" [view]="view"
+          [scheme]="colorScheme" [schemeType]="schemeType" [gradient]="gradient"
+          [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"
+          [legendTitle]="legendTitleMulti" [legendPosition]="legendPosition"
+          [animations]="animations" [showGridLines]="showGridLines"
+          [barPadding]="barPadding"
+          [tooltipDisabled]="tooltipDisabled"></ngx-charts-bar-vertical-2d>
+
+      </div>
+     </swiper-slide>
+      <swiper-slide>
+        <div class="charts-container d-flex justify-content-around mb-4">
+          <div class="chart">
+            <h3 class="chart-title">Account by State</h3>
+            <ngx-charts-pie-chart
+              [results]="countParEtatPiece"
+              [view]="view"
+              [scheme]="colorScheme2"
+              [legend]="true"
+              [labels]="true"
+              [legendPosition]="legendPosition"
+              [explodeSlices]="false"
+              [doughnut]="false"
+              [arcWidth]="0.3">
+            </ngx-charts-pie-chart>
+          </div>
+
+          <div class="chart">
+            <h3 class="chart-title">Account by Status</h3>
+            <ngx-charts-pie-chart
+              [results]="countParStatut"
+              [view]="view"
+              [scheme]="colorScheme2"
+              [legend]="true"
+              [legendPosition]="legendPosition"
+              [labels]="true"
+              [explodeSlices]="false"
+              [doughnut]="false"
+              [arcWidth]="0.3">
+            </ngx-charts-pie-chart>
+          </div>
+        </div>
+       </swiper-slide>
+    </swiper-container>
     <!-- Charts -->
     <div class="charts-container d-flex justify-content-around mb-4">
       <div class="chart">
@@ -92,31 +178,6 @@
         [yAxisLabel]="yAxisLabel">
       </ngx-charts-bar-vertical>
     </div>
-    <div class="charts-container d-flex justify-content-around mb-4">
-
-      <div class="chart-container">
-        <h3 class="chart-title">Non-Conformity per Machine</h3>
-        <ngx-charts-line-chart
-          [view]="view"
-          [scheme]="colorScheme"
-          [results]="nonConformePerMonth"
-          [gradient]="gradient"
-          [xAxis]="showXAxis"
-          [yAxis]="showYAxis"
-          [legend]="showLegend"
-          [showXAxisLabel]="showXAxisLabel"
-          [showYAxisLabel]="showYAxisLabel"
-          [xAxisLabel]="'Month'"
-          [yAxisLabel]="'Non-Conforming Pieces'">
-        </ngx-charts-line-chart>
-      </div>
-<div class="chart-container">
-      
-</div>
-
-    </div>
-
-    <!-- Tables -->
     <div class="table-container">
       <h3 class="table-title">Details</h3>
       <table class="table table-striped table-hover">
@@ -134,7 +195,25 @@
         </tbody>
       </table>
     </div>
+    <div class="charts-container d-flex justify-content-around mb-4">
 
+      <div class="chart-container">
+
+        <h3 class="chart-title">Non-Conformity per Machine</h3>
+
+        <ngx-charts-bar-vertical-2d [results]="nonConformePerMonth"
+          [view]="view"
+          [scheme]="colorScheme" [schemeType]="schemeType" [gradient]="gradient"
+          [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"
+          [legendTitle]="legendTitleMulti" [legendPosition]="legendPosition"
+          [animations]="animations" [showGridLines]="showGridLines"
+          [barPadding]="barPadding"
+          [tooltipDisabled]="tooltipDisabled"></ngx-charts-bar-vertical-2d>
+      </div>
+
+    </div>
     <div class="table-container">
       <h3 class="chart-title">Non-Conformity per Machine</h3>
       <table mat-table [dataSource]="transformedNonConformeTableData"
@@ -153,12 +232,31 @@
         <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
       </table>
     </div>
+    <div class="charts-container d-flex justify-content-around mb-4">
 
+      <div class="chart-container">
+        <h3 class="chart-title">Scrap pieces per Machine</h3>
 
+        <ngx-charts-bar-vertical-2d [results]="machineCount" [view]="view"
+          [scheme]="colorScheme" [schemeType]="schemeType" [gradient]="gradient"
+          [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend"
+          [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel"
+          [xAxisLabel]="xAxisLabel" [yAxisLabel]="yAxisLabel"
+          [legendTitle]="legendTitleMulti" [legendPosition]="legendPosition"
+          [animations]="animations" [showGridLines]="showGridLines"
+          [barPadding]="barPadding"
+          [tooltipDisabled]="tooltipDisabled"></ngx-charts-bar-vertical-2d>
+
+      </div>
+
+    </div>
+
+    <!-- Tables -->
 
     <div class="table-container">
       <h3 class="chart-title">Scrap pieces per Machine</h3>
-      <table mat-table [dataSource]="machineCount" class="mat-elevation-z8">
+      <table mat-table [dataSource]="machineCounttable"
+        class="mat-elevation-z8">
         <ng-container matColumnDef="Machine">
           <th mat-header-cell *matHeaderCellDef>Machine</th>
           <td mat-cell *matCellDef="let element">{{ element.Machine }}</td>

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA,NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxApexchartsModule } from 'ngx-apexcharts';
@@ -28,7 +28,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+// Step 1: Add the following line...
+import { register } from 'swiper/element/bundle';
 
+// Step 2: Add the following line...
+register();
 @NgModule({
   declarations: [
     AppComponent,
@@ -70,6 +74,8 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   providers: [
     LoginService,
+  ], schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
   ],
   bootstrap: [AppComponent]
 })
