@@ -425,8 +425,7 @@ exports.groupPointsByEmployee = async (req, res) => {
     matr="00"+matricule
           }
 const nbrabs = await congeController.getNombreConges(matr, date)
-              console.log(nbrabs);
-              console.log(matr);
+      
               employeeData.nbrAbsentParMois[date]-=nbrabs
               
     

@@ -13,6 +13,7 @@ import { EmployeesComponent } from './employees/employees.component';
 import { AdduserComponent } from './adduser/adduser.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { PiecesComponent } from './pieces/pieces.component';
 
 
 
@@ -21,6 +22,7 @@ const routes: Routes = [
 
   { path: '', component: LoginComponent }, // Include the email parameter
   { path: 'dashboard', component: DashboardComponent }, // Include the email parameter
+  { path: 'dashboardusine', component: PiecesComponent }, // Include the email parameter
 
   { path: 'admin', component: AdminComponent }, // Include the email parameter
   { path: 'approval', component: AuthorizationComponent }, // Include the email parameter

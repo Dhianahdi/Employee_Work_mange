@@ -20,10 +20,14 @@ import { HeaderComponent } from './components/header/header.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { ProfileComponent } from './profile/profile.component';
 import { LoginService } from './service/login.service';
-import { AdduserComponent } from './adduser/adduser.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
+import { PiecesComponent } from './pieces/pieces.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -35,7 +39,8 @@ import { LoginComponent } from './login/login.component';
     ProfileComponent,
     EmployeesComponent,
     DashboardComponent,
-      LoginComponent
+    LoginComponent,
+      PiecesComponent
    ],
   imports: [
     BrowserModule,
@@ -57,6 +62,10 @@ import { LoginComponent } from './login/login.component';
     CountUpModule,
     NgxSpinnerModule,
     NgxDatatableModule,
+     MatInputModule,
+    MatTableModule,
+    MatSelectModule,
+    MatIconModule,
 
   ],
   providers: [

@@ -14,7 +14,6 @@ const employeeRoutes = require('./routes/employeeRoutes')
 const employeePointsRoutes = require('./routes/employeePointsRoutes')
 const authorizationRoutes = require('./routes/authorizationRoutes')
 const congeRoutes = require('./routes/congeRoutes')
-const employeeController = require('./controllers/employeeController')
 // Create the server
 const server = http.createServer(app)
 
@@ -23,7 +22,7 @@ var config = {
     user: "sa", // Database username
     password: "1920", // Database password
     server: "LAPTOP-P1H9QAET", // Server name and instance (if any)
-    database: "usinage", // Database name
+    database: "KTN_System2", // Database name
   options: {
             trustServerCertificate: true, // Autoriser le certificat non approuvé (pour développement seulement)
 
@@ -168,11 +167,215 @@ app.use('/api/authorization', authorizationRoutes)
 app.use('/api/employeePoints', employeePointsRoutes)
 app.use('/api/conge', congeRoutes)
 
+
+
+app.get('/api/fiche_conformite', async (req, res) => {
+    try {
+        await sql.connect(config);
+        
+        const result = await sql.query('SELECT  * FROM Fiche_Conformité_tbl');
+        
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Erreur de connexion ou de requête : ', err);
+        res.status(500).send('Erreur serveur');
+    }
+});
+
+const moment = require('moment');  // Assurez-vous que moment.js est installé
+
+
+
+app.post('/api/fiche_conformitestats', async (req, res) => {
+    try {
+        const { startDate, endDate } = req.body;
+        const twentyFourHoursAgo = moment(startDate, 'YYYY-MM-DD').subtract(24, 'hours').format('YYYY-MM-DD');
+        const currentYear = moment().year();
+
+        // Requête pour la somme de Quantite_total groupée par Nom et Date pour aujourd'hui
+        const resultQuantite = await sql.query(`
+            SELECT Nom, SUM(Quantite_total) AS Quantite_total_somme
+            FROM Fiche_Conformité_tbl
+            WHERE CONVERT(DATE, Date) BETWEEN '${twentyFourHoursAgo}' AND '${endDate}'
+            GROUP BY Nom
+        `);
+
+        // Requête pour compter les occurrences de etatpiece (conforme et non conforme) pour aujourd'hui
+        const resultEtatPiece = await sql.query(`
+            SELECT 
+                COUNT(CASE WHEN etatpiece = 'conforme' THEN 1 END) AS count_etatpiece_conforme,
+                COUNT(CASE WHEN etatpiece = 'non conforme' THEN 1 END) AS count_etatpiece_non_conforme
+            FROM Fiche_Conformité_tbl
+            WHERE CONVERT(DATE, Date) BETWEEN '${twentyFourHoursAgo}' AND '${endDate}'
+        `);
+
+        // Requête pour compter les occurrences de Statut (Modification et Nouveau) pour aujourd'hui
+        const resultStatut = await sql.query(`
+            SELECT 
+                COUNT(CASE WHEN Statut = 'Modification' THEN 1 END) AS count_statut_modification,
+                COUNT(CASE WHEN Statut = 'Nouveau' THEN 1 END) AS count_statut_nouveau
+            FROM Fiche_Conformité_tbl
+            WHERE CONVERT(DATE, Date) BETWEEN '${twentyFourHoursAgo}' AND '${endDate}'
+        `);
+
+        // Requête pour le nombre d'etatpiece = 'non conforme' groupé par mois et machine pour l'année en cours
+        const resultNonConformePerMonth = await sql.query(`
+            SELECT 
+                Machine, 
+                MONTH(Date) AS Month, 
+                COUNT(*) AS count_non_conforme
+            FROM Fiche_Conformité_tbl
+            WHERE YEAR(Date) = ${currentYear} AND etatpiece = 'non conforme'
+            GROUP BY Machine, MONTH(Date)
+            ORDER BY Machine, Month
+        `);
+
+        // Requête pour le nombre d'occurrences groupées par le premier caractère de PM
+        const resultMachineCount = await sql.query(`
+            SELECT 
+                CASE 
+                    WHEN LEFT([PM], 1) IN ('L', 'l', '2') THEN 'CMX_650_V'
+                    ELSE 'Haas_VF2_SS'
+                END AS Machine,
+                MONTH(Date) AS Month,
+                COUNT(*) AS count_non_conforme
+            FROM Tableau_NC
+            WHERE YEAR(Date) = ${currentYear}
+            GROUP BY 
+                CASE 
+                    WHEN LEFT([PM], 1) IN ('L', 'l', '2') THEN 'CMX_650_V'
+                    ELSE 'Haas_VF2_SS'
+                END,
+                MONTH(Date)
+            ORDER BY Machine, Month
+        `);
+
+        res.json({
+            quantiteParNom: resultQuantite.recordset,
+            countParEtatPiece: resultEtatPiece.recordset,
+            countParStatut: resultStatut.recordset,
+            nonConformePerMonth: resultNonConformePerMonth.recordset,
+            machineCount: resultMachineCount.recordset
+        });
+    } catch (err) {
+        console.error('Erreur de connexion ou de requête : ', err);
+        res.status(500).send('Erreur serveur');
+    }
+});
+
+
+
+
+
+
+
+
+
+
 // Start the server
 server.listen(port, () => {
   console.log('Listening on ' + port)
 })
-const Employee = require('./models/employee'); // Assurez-vous de spécifier le chemin correct vers votre modèle
+
+
+
+// async function deleteHighQuantities() {
+//   try {
+//     // Connect to the database
+//     let pool = await sql.connect(config);
+
+//     // Update query to remove spaces from the 'Nom' column
+//     let result = await pool.request().query(`
+//     DELETE FROM [Fiche_Conformité_tbl] WHERE Quantite_total > 150;
+//     `);
+
+// console.log(`Deleted ${result.affectedRows} rows`);
+//   } catch (err) {
+//     console.error('Error executing the query:', err);
+//   }
+// }
+
+
+// deleteHighQuantities();
+
+
+
+
+
+
+
+
+// async function updateNames() {
+//   try {
+//     // Connect to the database
+//     let pool = await sql.connect(config);
+
+//     // Update query to remove spaces from the 'Nom' column
+//     let result = await pool.request().query(`
+//       UPDATE Fiche_Conformité_tbl
+//       SET Nom = REPLACE(Nom, ' ', '');
+//     `);
+
+//     console.log('Spaces removed successfully from the "Nom" column');
+//   } catch (err) {
+//     console.error('Error executing the query:', err);
+//   }
+// }
+
+
+// updateNames();
+
+
+// async function fixDateFormats() {
+// try {
+//     // Connect to the database
+//     let pool = await sql.connect(config);
+
+//     // Select the dates from the table starting from a specific ID
+//     let result = await pool.request().query(`
+//       SELECT id, Date
+//       FROM Fiche_Conformité_tbl
+//       WHERE id >= 77449
+//     `);
+
+//     for (let row of result.recordset) {
+//       let { id, Date } = row;
+
+//       // Check if the date is in "YYYY-DD-MM" format
+//       if (moment(Date, 'YYYY-DD-MM', true).isValid()) {
+//         let correctedDate = moment(Date, 'YYYY-DD-MM').format('YYYY-DD-MM');
+
+//         // Update the date in the database
+//         await pool.request()
+//           .input('id', sql.Int, id)
+//           .input('correctedDate', sql.VarChar, correctedDate)
+//           .query(`
+//             UPDATE Fiche_Conformité_tbl
+//             SET Date = @correctedDate
+//             WHERE id = @id
+//           `);
+
+//         console.log(`Updated date for id ${id}: ${moment(Date, 'YYYY-DD-MM').format('YYYY-DD-MM')} -> ${correctedDate}`);
+//       }
+//     }
+//   } catch (err) {
+//     console.error('Error executing the query:', err);
+//   }
+// }
+
+
+
+// fixDateFormats();
+
+
+
+
+
+
+
+
+
+
 
 
 // const addDPAttributeToAllEmployees = async () => {
