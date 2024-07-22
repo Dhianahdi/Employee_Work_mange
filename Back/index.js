@@ -77,12 +77,7 @@ app.use((req, res, next) => {
   )
   next()
 })
-const corsOptions = {
-  origin: 'https://employee-work-mange.vercel.app',
-  optionsSuccessStatus: 200 // Pour les navigateurs plus anciens
-};
 
-app.use(cors(corsOptions));
 // Configure multer for image uploads
 const imageStorage = multer.diskStorage({
   destination: function (req, file, cb) {

@@ -72,10 +72,10 @@ filterDates(data: any[]): any[] {
      this.matricule = localStorage.getItem('mat')
          console.log(   this.matricule)
 
-      const response = await this.http.get<any[]>('http://192.168.3.2:5000/api/employee/getEmployeeByMatricule/'+this.matricule).toPromise();
-    const response1 = await this.http.get<EmployeePoint[]>('http://192.168.3.2:5000/api/employeePoints/' + this.removeLeadingZeros(this.matricule)).toPromise();
-    const response2 = await this.http.get<any>('http://192.168.3.2:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(this.matricule)).toPromise();
-    const response3 = await this.http.get<any>('http://192.168.3.2:5000/api/authorization/' +this.removeLeadingZeros (this.matricule)).toPromise();
+      const response = await this.http.get<any[]>('http://localhost:5000/api/employee/getEmployeeByMatricule/'+this.matricule).toPromise();
+    const response1 = await this.http.get<EmployeePoint[]>('http://localhost:5000/api/employeePoints/' + this.removeLeadingZeros(this.matricule)).toPromise();
+    const response2 = await this.http.get<any>('http://localhost:5000/api/employeePoints/getEmployeePointsDetails/' + this.removeLeadingZeros(this.matricule)).toPromise();
+    const response3 = await this.http.get<any>('http://localhost:5000/api/authorization/' +this.removeLeadingZeros (this.matricule)).toPromise();
       this.employee = response;
      this.employeedata = response1 ;
      this.employeedata1 = response2;
@@ -245,7 +245,7 @@ console.log(this.processedData)
       .set('date', date);
             console.log(params);
 
-      const response = this.http.get<any>('http://192.168.3.2:5000/api/conge/search/'+matricule+"/"+date);
+      const response = this.http.get<any>('http://localhost:5000/api/conge/search/'+matricule+"/"+date);
       console.log(response);
     return response;
     }
