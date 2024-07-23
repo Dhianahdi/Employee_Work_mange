@@ -138,10 +138,8 @@ export class EmployeesComponent implements OnInit {
 
       const formData = new FormData();
       formData.append('file', file);
-console.log(formData)
       this.http.post<any>('http://localhost:5000/api/upload', formData).subscribe(
         (response) => {
-          console.log(response)
 
           this.userForm.patchValue({
             image: response.filename
@@ -575,7 +573,6 @@ getDelays(details: any): any[] {
 
     const jsonData = this.convertExcelToJson(newWorkbook);
 
-    console.log('JSON data:', jsonData);
     this.saveJsonDataToServer(jsonData)
                          this.spinner.hide();
 
@@ -587,7 +584,6 @@ getDelays(details: any): any[] {
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
   const sheetData = XLSX.utils.sheet_to_json(worksheet, { header: 'A' });
-  console.log( sheetData )
 
   const jsonData = sheetData.slice(1).map((row: any) => ({
     Matricule: row.A,
@@ -610,10 +606,39 @@ private formatDate(date: Date): string {
 private padNumber(num: number): string {
   return num.toString().padStart(2, '0');
 }
+private chunkObject(obj: any, size: number): any[] {
+  const chunks:any = [];
+  let index = 0;
 
-private saveJsonDataToServer(jsonData: any): Promise<any> {
-    const url = 'http://localhost:5000/api/saveJsonData';
-
-    return this.http.post<any>(url, jsonData).toPromise();
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const chunkIndex = Math.floor(index / size);
+      if (!chunks[chunkIndex]) {
+        chunks[chunkIndex] = {};
+      }
+      chunks[chunkIndex][key] = obj[key];
+      index++;
+    }
   }
+
+  return chunks;
+}
+private saveJsonDataToServer(jsonData: any): Promise<any> {
+  const url = 'http://localhost:5000/api/saveJsonData';
+  const chunkSize = Math.ceil(jsonData.length / 3);
+
+  const chunks = [
+    jsonData.slice(0, chunkSize),
+    jsonData.slice(chunkSize, chunkSize * 2),
+    jsonData.slice(chunkSize * 2)
+  ];
+
+  const promises = chunks.map((chunk, index) => {
+    console.log(`Sending chunk ${index + 1}`, chunk);
+    return this.http.post<any>(url, chunk).toPromise();
+  });
+
+  return Promise.all(promises);
+}
+
 }

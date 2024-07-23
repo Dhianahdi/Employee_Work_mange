@@ -9,6 +9,8 @@ const path = require('path')
 const fs = require('fs')
 const sql = require("mssql");
 
+
+
 // Import your routes
 const employeeRoutes = require('./routes/employeeRoutes')
 const employeePointsRoutes = require('./routes/employeePointsRoutes')
@@ -34,12 +36,12 @@ var config = {
 };
 
 
-// Connect to SQL Server
 sql.connect(config, err => {
     if (err) {
-        throw err;
+        console.error("Erreur de connexion à SQL Server:", err.message);
+    } else {
+        console.log("Connexion réussie à SQL Server !");
     }
-    console.log("Connection Successful!");
 });
 
 
@@ -126,20 +128,40 @@ app.post('/api/upload', imageUpload.single('file'), (req, res) => {
 
   res.send({ filename: req.file.filename })
 })
+// Augmentez la limite de taille des charges utiles de requête
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+let receivedChunks = [];
+
 app.post('/api/saveJsonData', (req, res) => {
   const jsonData = req.body;
-  const filePath = path.join(__dirname, './file/test.json');
 
-  fs.writeFile(filePath, JSON.stringify(jsonData, null, 2), (err) => {
-    if (err) {
-      console.error('Error writing JSON file:', err);
-      res.status(500).json({ error: 'Failed to save JSON data' });
-    } else {
-      console.log('JSON data saved successfully');
-      res.json({ message: 'JSON data saved successfully' });
-    }
-  });
+  receivedChunks.push(jsonData);
+
+  if (receivedChunks.length === 3) {
+    const combinedData = [].concat(...receivedChunks);
+    const filePath = path.join(__dirname, './file/test.json');
+        console.log(combinedData);
+
+    fs.writeFile(filePath, JSON.stringify(combinedData, null, 2), (err) => {
+      if (err) {
+        console.error('Error writing JSON file:', err);
+        res.status(500).json({ error: 'Failed to save JSON data' });
+      } else {
+        console.log('JSON data saved successfully');
+        res.json({ message: 'JSON data saved successfully' });
+      }
+      receivedChunks = []; // Reset the chunks
+    });
+  } else {
+    res.json({ message: 'Chunk received, waiting for more chunks' });
+  }
 });
+
+
 // Endpoint for file uploads to 'file' directory and renaming to 'test.js'
 app.post(
   '/api/upload-file',
