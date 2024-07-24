@@ -97,3 +97,35 @@ exports.getNombreConges = async(matricule, monthYear) =>{
     throw error;
   }
 }
+exports.getCongesByMatriculeAndDate1 = async(matricule, date) =>{
+  try {
+let matr=matricule
+      if (matricule.length === 2) {
+  matr ="0"+matricule
+}     if (matricule.length === 1) {
+    matr="00"+matricule
+          }
+    const formattedDate = new Date(date);
+    // Requête pour compter les congés pour cet employé dans le mois donné
+   const conges = await Conge.find({
+      matricule: matr,
+      dateDebut: { $lte: formattedDate },
+      dateFin: { $gte: formattedDate }
+   });
+    if (matricule === "72") {
+          
+     console.log(matricule);
+
+            console.log(formattedDate)
+            console.log(conges)
+    }
+    if (conges.length > 0) {
+      return true
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error('Error fetching congés:', error);
+    throw error;
+  }
+}

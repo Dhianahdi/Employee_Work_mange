@@ -398,10 +398,19 @@ exports.groupPointsByEmployee = async (req, res) => {
             // Update absences par mois
             const absenceMonth = d.format('MM-YYYY');
                 
+   const nbrAbsents = groupedResults[matricule].nbrAbsentParMois.get(absenceMonth) || 0;
+            const encg = await congeController.getCongesByMatriculeAndDate1(matricule, d.format('YYYY-MM-DD'))
+            //             console.log(matricule);
 
-            
-            const nbrAbsents = groupedResults[matricule].nbrAbsentParMois.get(absenceMonth) || 0;
+            // console.log(encg)
+
+             if ( encg=== false)
+            {
             groupedResults[matricule].nbrAbsentParMois.set(absenceMonth, nbrAbsents + 1);
+             } else {
+            groupedResults[matricule].nbrAbsentParMois.set(absenceMonth, nbrAbsents + 0);
+
+            }
           }
           allDates.push(d.format('YYYY-MM-DD'));
         }
@@ -426,7 +435,13 @@ exports.groupPointsByEmployee = async (req, res) => {
           }
 const nbrabs = await congeController.getNombreConges(matr, date)
       
-              employeeData.nbrAbsentParMois[date]-=nbrabs
+              // employeeData.nbrAbsentParMois[date] -= nbrabs
+              // if (matr === "072") {
+              //   console.log(date);
+              //   console.log(nbrabs);
+
+              // }
+                
               
     
 }

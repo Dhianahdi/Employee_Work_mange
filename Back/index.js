@@ -19,31 +19,51 @@ const congeRoutes = require('./routes/congeRoutes')
 // Create the server
 const server = http.createServer(app)
 
-// SQL Server configuration
 var config = {
+
     user: "sa", // Database username
-    password: "1920", // Database password
-    server: "LAPTOP-P1H9QAET", // Server name and instance (if any)
+
+    password: "admin", // Database password
+
+    server: "192.168.3.2\\SQLEXPRESS", // Server name and instance (if any)
+
     database: "KTN_System2", // Database name
+
   options: {
+
             trustServerCertificate: true, // Autoriser le certificat non approuvé (pour développement seulement)
 
+ 
+
         trustedConnection: true,
+
         encrypt: false, // Disable encryption
+
         enableArithAbort: true // Enable arithabort to avoid certain types of errors
+
     },
+
     port: 1433 // Ensure this is the correct port
+
 };
 
+ 
+
+ 
+
+// Connect to SQL Server
 
 sql.connect(config, err => {
-    if (err) {
-        console.error("Erreur de connexion à SQL Server:", err.message);
-    } else {
-        console.log("Connexion réussie à SQL Server !");
-    }
-});
 
+    if (err) {
+
+    console.log("Connection nott Successful!");
+
+    }
+
+    console.log("Connection Successful!");
+
+});
 
 
 

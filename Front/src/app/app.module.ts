@@ -30,6 +30,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 // Step 1: Add the following line...
 import { register } from 'swiper/element/bundle';
+import { DashboarduserComponent } from './dashboarduser/dashboarduser.component';
 
 // Step 2: Add the following line...
 register();
@@ -44,7 +45,8 @@ register();
     EmployeesComponent,
     DashboardComponent,
     LoginComponent,
-      PiecesComponent
+    PiecesComponent,
+      DashboarduserComponent,
    ],
   imports: [
     BrowserModule,

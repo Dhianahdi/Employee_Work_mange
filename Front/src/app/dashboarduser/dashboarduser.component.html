@@ -1,0 +1,73 @@
+        <h2 class="text-dark">Kufferath Employees Statistics </h2>
+
+<div class="container-fluid">
+  <div class="inner-contents full-screen">
+  
+
+    <swiper-container class="mySwiper" autoplay="true"
+      [autoplay]="{ delay: 10000 }" loop="true" navigation="true"
+      pagination="true">
+      <swiper-slide>
+        <div class="charts-container d-flex justify-content-around mb-4 full-screen">
+          <div class="chart full-screen">
+            <h3 class="chart-title">Top Absences</h3>
+            <ngx-charts-bar-vertical
+              [results]="topAbsences"
+              [view]="view"
+              [scheme]="colorScheme"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel"
+              (select)="onSelect($event)">
+            </ngx-charts-bar-vertical>
+          </div>
+
+        </div>
+      </swiper-slide>
+      <swiper-slide>
+           <div class="chart full-screen">
+            <h3 class="chart-title">Top Tardiness</h3>
+            <ngx-charts-bar-vertical
+              [results]="topTardiness"
+              [view]="view"
+              [scheme]="colorScheme"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel"
+              (select)="onSelect($event)">
+            </ngx-charts-bar-vertical>
+          </div>
+      </swiper-slide>
+      <swiper-slide>
+        <div class="chart full-screen">
+          <h3 class="chart-title">Top Punctual Employees</h3>
+          <ngx-charts-bar-vertical
+            [results]="topPunctualEmployees"
+            [view]="view"
+            [scheme]="colorScheme"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel"
+            (select)="onSelect($event)">
+          </ngx-charts-bar-vertical>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+</div>
+
