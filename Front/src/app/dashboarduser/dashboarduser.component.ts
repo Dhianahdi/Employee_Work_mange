@@ -17,7 +17,7 @@ export class DashboarduserComponent  implements OnInit {
   topPunctualEmployees: any[] = [];
   punctualityDetails: any[] = [];
   employees: any[] = [];
-  view: [number, number] = [1200, 600];
+  view: [number, number] = [1300, 800];
   showLegend: boolean = true;
   showXAxis: boolean = true;
   showYAxis: boolean = true;
